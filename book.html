@@ -4,43 +4,101 @@
   <meta charset="UTF-8">
   <title>Hunter's Hotel Booking</title>
   <style>
-    body { font-family: sans-serif; background: #f8f8f8; padding: 40px; }
-    form { max-width: 500px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-    label { display: block; margin-top: 15px; }
-    input, select, button { width: 100%; padding: 10px; margin-top: 5px; font-size: 16px; }
-    button { background: #2d89ef; color: white; border: none; margin-top: 20px; cursor: pointer; }
-    button:hover { background: #1b5ecb; }
+    body {
+      font-family: sans-serif;
+      background: #f3f3f3;
+      padding: 30px;
+    }
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin: 12px 0 5px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      width: 100%;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #45a049;
+    }
   </style>
 </head>
 <body>
 
-  <h2 style="text-align:center;">Hunter's Hotel Booking</h2>
+  <h2>Hunter's Hotel Reservation</h2>
 
-  <form action="https://docs.google.com/forms/d/e/1FAIpQLSeK46TH2qksge4L0FXkaN-bqGj3_GqXgf1bbyDbnBAnDjAMXw/formResponse" method="POST" target="_blank">
-    
+  <form id="hotelForm">
     <label for="name">Name</label>
-    <input type="text" name="entry.1012081427" id="name" required>
+    <input type="text" name="name" required>
 
     <label for="room">Room Type</label>
-    <select name="entry.958058116" id="room" required>
-      <option value="">Select a Room Type</option>
-      <option value="Standard Room">Standard Room</option>
-      <option value="Family Room">Family Room</option>
-      <option value="Executive Room">Executive Room</option>
+    <select name="room" required>
+      <option value="">Select...</option>
+      <option value="Standard">Standard Room</option>
+      <option value="Family">Family Room</option>
+      <option value="Executive">Executive Room</option>
       <option value="Suite">Suite</option>
     </select>
 
     <label for="checkin">Check-In Date</label>
-    <input type="date" name="entry.498441149" id="checkin" required>
+    <input type="date" name="checkin" required>
 
     <label for="checkout">Check-Out Date</label>
-    <input type="date" name="entry.366552792" id="checkout" required>
+    <input type="date" name="checkout" required>
 
     <label for="notes">Special Requests (optional, please put your Roblox & Discord usernames here, even if you don't want to make any special requests.)</label>
-    <input type="text" name="entry.96572915" id="notes" placeholder="Optional">
+    <textarea name="notes" rows="3" placeholder="Anything else?"></textarea>
 
-    <button type="submit">Submit Reservation</button>
+    <button type="submit">Submit Booking</button>
   </form>
+
+  <script>
+    document.getElementById("hotelForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+      const data = {};
+      formData.forEach((value, key) => data[key] = value);
+
+      fetch("YOUR_SCRIPT_URL_HERE", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      .then(response => response.text())
+      .then(result => {
+        alert("Reservation submitted successfully!");
+        document.getElementById("hotelForm").reset();
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        alert("There was an error submitting your reservation.");
+      });
+    });
+  </script>
 
 </body>
 </html>
