@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hotel Admin Panel</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 900px; margin: auto; }
+    .hidden { display: none; }
+    button { margin-top: 10px; cursor: pointer; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #eee; }
+    .delete-btn { color: red; cursor: pointer; }
+    #login-error { color: red; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+<h2>Hotel Admin Panel</h2>
+
+<div id="login-section">
+  <h3>Login</h3>
+  <input type="text" id="username" placeholder="Username" /><br />
+  <input type="password" id="password" placeholder="Password" /><br />
+  <button id="login-btn">Login</button>
+  <p id="login-error"></p>
+</div>
+
+<div id="admin-section" class="hidden">
+  <button id="logout-btn">Logout</button>
+  <h3>Reservations</h3>
+  <table id="reservations-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Room</th>
+        <th>Check-In</th>
+        <th>Check-Out</th>
+        <th>Notes</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="reservations-body"></tbody>
+  </table>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyAK-baJsRLyBp8EFmtWFqOmjTxjALTRl6Q",
+    authDomain: "hunter-s-2e810.firebaseapp.com",
+    projectId: "hunter-s-2e810",
+    storageBucket: "hunter-s-2e810.firebasestorage.app",
+    messagingSenderId: "897135124770",
+    appId: "1:897135124770:web:7018fb47a4ec4d7c52857b",
+    measurementId: "G-QRG84T7LLQ"
+  };
+
+  // Initialize Firebase and Firestore
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Hardcoded users: username => {password, role}
+  const users = {
+    staff1: { password: "staffpass", role: "staff" },
+    manager: { password: "zxcv1234", role: "manager" }
+  };
+
+  const loginSection = document.getElementById('login-section');
+  const adminSection = document.getElementById('admin-section');
+  const loginBtn = document.getElementById('login-btn');
+  const logoutBtn = document.getElementById('logout-btn');
+  const loginError = document.getElementById('login-error');
+  const reservationsBody = document.getElementById('reservations-body');
+
+  function showAdminPage(role) {
+    loginSection.classList.add('hidden');
+    adminSection.classList.remove('hidden');
+    loadReservations(role);
+  }
+
+  function showLoginPage() {
+    loginSection.classList.remove('hidden');
+    adminSection.classList.add('hidden');
+    loginError.textContent = "";
+    document.getElementById('username').value = "";
+    document.getElementById('password').value = "";
+  }
+
+  // Load reservations from Firestore and show delete if manager
+  async function loadReservations(role) {
+    reservationsBody.innerHTML = '';
+    const canDelete = role === 'manager';
+    const querySnapshot = await getDocs(collection(db, "reservations"));
+    querySnapshot.forEach(docSnap => {
+      const data = docSnap.data();
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${data.name}</td>
+        <td>${data.room}</td>
+        <td>${data.checkin}</td>
+        <td>${data.checkout}</td>
+        <td>${data.notes || ''}</td>
+        <td>${canDelete ? `<span class="delete-btn" data-id="${docSnap.id}">Delete</span>` : ''}</td>
+      `;
+      reservationsBody.appendChild(tr);
+    });
+
+    if(canDelete) {
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const id = e.target.getAttribute('data-id');
+          if(confirm('Are you sure you want to delete this reservation?')) {
+            await deleteDoc(doc(db, "reservations", id));
+            loadReservations(role);
+          }
+        });
+      });
+    }
+  }
+
+  loginBtn.addEventListener('click', () => {
+    loginError.textContent = '';
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    if(users[username] && users[username].password === password) {
+      const role = users[username].role;
+      sessionStorage.setItem('loggedInUser', username);
+      sessionStorage.setItem('role', role);
+      showAdminPage(role);
+    } else {
+      loginError.textContent = 'Invalid username or password';
+    }
+  });
+
+  logoutBtn.addEventListener('click', () => {
+    sessionStorage.clear();
+    showLoginPage();
+  });
+
+  // Auto login if session exists
+  const savedUser = sessionStorage.getItem('loggedInUser');
+  const savedRole = sessionStorage.getItem('role');
+  if(savedUser && savedRole) {
+    showAdminPage(savedRole);
+  } else {
+    showLoginPage();
+  }
+</script>
+
+</body>
+</html>
