@@ -2,27 +2,24 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Hotel Booking</title>
+  <title>Hunter's Hotel Booking</title>
   <style>
-    /* Simple styling */
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    form { max-width: 400px; margin: auto; background: #f9f9f9; padding: 15px; border-radius: 8px; }
-    label { display: block; margin-top: 10px; }
-    input, select, textarea { width: 100%; padding: 8px; margin-top: 5px; }
-    button { margin-top: 15px; padding: 10px; background-color: #007bff; color: white; border: none; cursor: pointer; }
-    button:hover { background-color: #0056b3; }
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 500px; margin: auto; }
+    label, input, select, textarea, button { display: block; width: 100%; margin-bottom: 15px; }
+    button { padding: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
+    button:hover { background: #0056b3; }
   </style>
 </head>
 <body>
 
-<h2>Hunter's Hotel Booking</h2>
+<h2>Hotel Booking</h2>
 
 <form id="bookingForm">
   <label for="name">Name</label>
-  <input type="text" name="name" id="name" required />
+  <input type="text" id="name" required />
 
   <label for="room">Room Type</label>
-  <select name="room" id="room" required>
+  <select id="room" required>
     <option value="">Select a room</option>
     <option value="Standard">Standard Room</option>
     <option value="Family">Family Room</option>
@@ -31,48 +28,58 @@
   </select>
 
   <label for="checkin">Check-In Date</label>
-  <input type="date" name="checkin" id="checkin" required />
+  <input type="date" id="checkin" required />
 
   <label for="checkout">Check-Out Date</label>
-  <input type="date" name="checkout" id="checkout" required />
+  <input type="date" id="checkout" required />
 
   <label for="notes">Special Requests (optional, please put your Roblox & Discord usernames here, even if you don't want to make any special requests.)</label>
-  <textarea name="notes" id="notes" rows="3"></textarea>
+  <textarea id="notes"></textarea>
 
   <button type="submit">Submit Booking</button>
 </form>
 
-<script>
-  document.getElementById('bookingForm').addEventListener('submit', function(e) {
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+  // Your Firebase config here
+  const firebaseConfig = {
+    apiKey: "AIzaSyAK-baJsRLyBp8EFmtWFqOmjTxjALTRl6Q",
+    authDomain: "hunter-s-2e810.firebaseapp.com",
+    projectId: "hunter-s-2e810",
+    storageBucket: "hunter-s-2e810.firebasestorage.app",
+    messagingSenderId: "897135124770",
+    appId: "1:897135124770:web:7018fb47a4ec4d7c52857b",
+    measurementId: "G-QRG84T7LLQ"
+  };
+
+  // Initialize Firebase app and Firestore
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const form = document.getElementById('bookingForm');
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const formData = new FormData(this);
-    const data = {};
-    formData.forEach((value, key) => {
-      data[key] = value;
-    });
+    const bookingData = {
+      name: form.name.value.trim(),
+      room: form.room.value,
+      checkin: form.checkin.value,
+      checkout: form.checkout.value,
+      notes: form.notes.value.trim(),
+      timestamp: serverTimestamp()
+    };
 
-    fetch("https://script.google.com/macros/s/AKfycbxaHibaDG04SL0_JO5cSmi07PP1-STRFgqrbeoTNp2dd1e4GL4reSDLeIBQ8c_suMh7xA/exec", {
-      method: "POST",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(result => {
-      if (result.result === "success") {
-        alert("Booking submitted successfully!");
-        this.reset();
-      } else {
-        alert("Failed to submit booking.");
-      }
-    })
-    .catch(error => {
-      console.error("Error:", error);
-      alert("There was an error submitting your booking.");
-    });
+    try {
+      await addDoc(collection(db, "reservations"), bookingData);
+      alert("Booking submitted successfully!");
+      form.reset();
+    } catch (error) {
+      console.error("Error submitting booking: ", error);
+      alert("Error submitting booking. Please try again.");
+    }
   });
 </script>
 
