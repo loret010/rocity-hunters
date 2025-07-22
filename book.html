@@ -1,40 +1,46 @@
-<form id="bookingForm">
-  <input type="text" name="name" placeholder="Full Name" required />
-  <select name="roomType" required>
-    <option value="">Select a Room Type</option>
-    <option value="Standard Room">Standard Room</option>
-    <option value="Family Room">Family Room</option>
-    <option value="Executive Room">Executive Room</option>
-    <option value="Suite">Suite</option>
-  </select>
-  <input type="date" name="checkIn" required />
-  <input type="date" name="checkOut" required />
-  <input type="text" name="notes" placeholder="Special Requests" />
-  <button type="submit">Submit Booking</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hunter's Hotel Booking</title>
+  <style>
+    body { font-family: sans-serif; background: #f8f8f8; padding: 40px; }
+    form { max-width: 500px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    label { display: block; margin-top: 15px; }
+    input, select, button { width: 100%; padding: 10px; margin-top: 5px; font-size: 16px; }
+    button { background: #2d89ef; color: white; border: none; margin-top: 20px; cursor: pointer; }
+    button:hover { background: #1b5ecb; }
+  </style>
+</head>
+<body>
 
-<script>
-  const form = document.getElementById("bookingForm");
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
+  <h2 style="text-align:center;">Hunter's Hotel Booking</h2>
 
-    const data = Object.fromEntries(new FormData(form).entries());
+  <form action="https://docs.google.com/forms/d/e/1FAIpQLSeK46TH2qksge4L0FXkaN-bqGj3_GqXgf1bbyDbnBAnDjAMXw/formResponse" method="POST" target="_blank">
+    
+    <label for="name">Name</label>
+    <input type="text" name="entry.1012081427" id="name" required>
 
-    fetch("https://script.google.com/macros/s/AKfycbwzve58qxni1mRpPRcI6zx-kOpT3FRp3VCzV3IANsPupSz5rmOls9hrUnfnpPd9z-ZfjA/exec", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-    .then(res => res.json())
-    .then(response => {
-      alert("✅ Booking submitted!");
-      form.reset();
-    })
-    .catch(error => {
-      alert("❌ Error submitting form.");
-      console.error(error);
-    });
-  });
-</script>
+    <label for="room">Room Type</label>
+    <select name="entry.958058116" id="room" required>
+      <option value="">Select a Room Type</option>
+      <option value="Standard Room">Standard Room</option>
+      <option value="Family Room">Family Room</option>
+      <option value="Executive Room">Executive Room</option>
+      <option value="Suite">Suite</option>
+    </select>
+
+    <label for="checkin">Check-In Date</label>
+    <input type="date" name="entry.498441149" id="checkin" required>
+
+    <label for="checkout">Check-Out Date</label>
+    <input type="date" name="entry.366552792" id="checkout" required>
+
+    <label for="notes">Special Requests (optional, please put your Roblox & Discord usernames here, even if you don't want to make any special requests.)</label>
+    <input type="text" name="entry.96572915" id="notes" placeholder="Optional">
+
+    <button type="submit">Submit Reservation</button>
+  </form>
+
+</body>
+</html>
