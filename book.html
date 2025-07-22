@@ -1,104 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Hunter's Hotel Booking</title>
+  <meta charset="UTF-8" />
+  <title>Hotel Booking</title>
   <style>
-    body {
-      font-family: sans-serif;
-      background: #f3f3f3;
-      padding: 30px;
-    }
-    form {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 500px;
-      margin: auto;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    label {
-      display: block;
-      margin: 12px 0 5px;
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      box-sizing: border-box;
-    }
-    button {
-      margin-top: 15px;
-      padding: 10px;
-      background: #4CAF50;
-      color: white;
-      border: none;
-      width: 100%;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #45a049;
-    }
+    /* Simple styling */
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    form { max-width: 400px; margin: auto; background: #f9f9f9; padding: 15px; border-radius: 8px; }
+    label { display: block; margin-top: 10px; }
+    input, select, textarea { width: 100%; padding: 8px; margin-top: 5px; }
+    button { margin-top: 15px; padding: 10px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+    button:hover { background-color: #0056b3; }
   </style>
 </head>
 <body>
 
-  <h2>Hunter's Hotel Reservation</h2>
+<h2>Hunter's Hotel Booking</h2>
 
-  <form id="hotelForm">
-    <label for="name">Name</label>
-    <input type="text" name="name" required>
+<form id="bookingForm">
+  <label for="name">Name</label>
+  <input type="text" name="name" id="name" required />
 
-    <label for="room">Room Type</label>
-    <select name="room" required>
-      <option value="">Select...</option>
-      <option value="Standard">Standard Room</option>
-      <option value="Family">Family Room</option>
-      <option value="Executive">Executive Room</option>
-      <option value="Suite">Suite</option>
-    </select>
+  <label for="room">Room Type</label>
+  <select name="room" id="room" required>
+    <option value="">Select a room</option>
+    <option value="Standard">Standard Room</option>
+    <option value="Family">Family Room</option>
+    <option value="Executive">Executive Room</option>
+    <option value="Suite">Suite</option>
+  </select>
 
-    <label for="checkin">Check-In Date</label>
-    <input type="date" name="checkin" required>
+  <label for="checkin">Check-In Date</label>
+  <input type="date" name="checkin" id="checkin" required />
 
-    <label for="checkout">Check-Out Date</label>
-    <input type="date" name="checkout" required>
+  <label for="checkout">Check-Out Date</label>
+  <input type="date" name="checkout" id="checkout" required />
 
-    <label for="notes">Special Requests (optional, please put your Roblox & Discord usernames here, even if you don't want to make any special requests.)</label>
-    <textarea name="notes" rows="3" placeholder="Anything else?"></textarea>
+  <label for="notes">Special Requests (optional, please put your Roblox & Discord usernames here, even if you don't want to make any special requests.)</label>
+  <textarea name="notes" id="notes" rows="3"></textarea>
 
-    <button type="submit">Submit Booking</button>
-  </form>
+  <button type="submit">Submit Booking</button>
+</form>
 
-  <script>
-    document.getElementById("hotelForm").addEventListener("submit", function(e) {
-      e.preventDefault();
+<script>
+  document.getElementById('bookingForm').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-      const formData = new FormData(this);
-      const data = {};
-      formData.forEach((value, key) => data[key] = value);
-
-      fetch("https://script.google.com/macros/s/AKfycbwKmxTuoz3Kv4cIuENm6wa9Xpd3XQvnu7cysNFQT371RAOaT2gg9qAl_E5_3b2Jk3lTyQ/exec", {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-          "Content-Type": "application/json"
-        }
-      })
-      .then(response => response.text())
-      .then(result => {
-        alert("Reservation submitted successfully!");
-        document.getElementById("hotelForm").reset();
-      })
-      .catch(error => {
-        console.error("Error:", error);
-        alert("There was an error submitting your reservation.");
-      });
+    const formData = new FormData(this);
+    const data = {};
+    formData.forEach((value, key) => {
+      data[key] = value;
     });
-  </script>
+
+    fetch("https://script.google.com/macros/s/AKfycbxaHibaDG04SL0_JO5cSmi07PP1-STRFgqrbeoTNp2dd1e4GL4reSDLeIBQ8c_suMh7xA/exec", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+      if (result.result === "success") {
+        alert("Booking submitted successfully!");
+        this.reset();
+      } else {
+        alert("Failed to submit booking.");
+      }
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      alert("There was an error submitting your booking.");
+    });
+  });
+</script>
 
 </body>
 </html>
