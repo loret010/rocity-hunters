@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book a Room</title>
+  <style>
+    body { font-family: sans-serif; margin: 40px; background-color: #f4f4f4; }
+    h1 { text-align: center; }
+    form { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; }
+    label { display: block; margin-top: 10px; }
+    input, select, button { width: 100%; padding: 10px; margin-top: 5px; }
+    button { background-color: #2d89ef; color: white; border: none; cursor: pointer; margin-top: 20px; }
+    button:hover { background-color: #1b5ecb; }
+  </style>
+</head>
+<body>
+
+<h1>Hotel Room Reservation</h1>
+<form action="https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse" method="POST" target="_blank">
+  <label for="entry.111111111">Name:</label>
+  <input type="text" name="entry.111111111" required />
+
+  <label for="entry.222222222">Room Type:</label>
+  <select name="entry.222222222" required>
+    <option value="">Select a Room Type</option>
+    <option value="Standard Room">Standard Room (8)</option>
+    <option value="Family Room">Family Room (5)</option>
+    <option value="Executive Room">Executive Room (3)</option>
+    <option value="Suite">Suite (3)</option>
+  </select>
+
+  <label for="entry.333333333">Check-In Date:</label>
+  <input type="date" name="entry.333333333" required />
+
+  <label for="entry.444444444">Check-Out Date:</label>
+  <input type="date" name="entry.444444444" required />
+
+  <label for="entry.555555555">Special Requests (optional; please make sure to put here your Roblox username and Discord username, even if you don't have special requests.):</label>
+  <input type="text" name="entry.555555555" />
+
+  <button type="submit">Submit Booking</button>
+</form>
+
+</body>
+</html>
