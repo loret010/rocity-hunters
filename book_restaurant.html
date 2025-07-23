@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Restaurant Reservation - Hunter's</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f8f8f8;
+      margin: 0;
+      padding: 30px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgb(0 0 0 / 0.1);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #1b1b1b;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #1b1b1b;
+      box-shadow: 0 0 6px #1b1b1baa;
+    }
+    button {
+      background: #1b1b1b;
+      color: white;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      font-size: 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background: #333;
+    }
+    .success {
+      margin-top: 15px;
+      color: green;
+      text-align: center;
+      font-weight: bold;
+    }
+    .error {
+      margin-top: 15px;
+      color: red;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Book a Table</h1>
+    <form id="reservationForm">
+      <input type="text" id="name" placeholder="Your Name" required />
+      <input type="text" id="discordUser" placeholder="Discord Username (e.g. user#1234)" required />
+      <input type="text" id="robloxUser" placeholder="Roblox Username" required />
+      <input type="date" id="date" required />
+      <input type="time" id="time" required />
+      <input type="number" id="guests" min="1" max="20" placeholder="Number of Guests" required />
+      <textarea id="notes" placeholder="Any special requests? (Optional)"></textarea>
+      <button type="submit">Submit Reservation</button>
+      <div class="success" id="successMessage" style="display:none;">Reservation submitted!</div>
+      <div class="error" id="errorMessage" style="display:none;">Something went wrong. Try again.</div>
+    </form>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAK-baJsRLyBp8EFmtWFqOmjTxjALTRl6Q",
+      authDomain: "hunter-s-2e810.firebaseapp.com",
+      projectId: "hunter-s-2e810",
+      storageBucket: "hunter-s-2e810.appspot.com",
+      messagingSenderId: "897135124770",
+      appId: "1:897135124770:web:7018fb47a4ec4d7c52857b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const form = document.getElementById("reservationForm");
+    const successMessage = document.getElementById("successMessage");
+    const errorMessage = document.getElementById("errorMessage");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      successMessage.style.display = "none";
+      errorMessage.style.display = "none";
+
+      const reservation = {
+        name: document.getElementById("name").value.trim(),
+        discordUser: document.getElementById("discordUser").value.trim(),
+        robloxUser: document.getElementById("robloxUser").value.trim(),
+        date: document.getElementById("date").value,
+        time: document.getElementById("time").value,
+        guests: document.getElementById("guests").value,
+        notes: document.getElementById("notes").value.trim()
+      };
+
+      try {
+        await addDoc(collection(db, "restaurant_reservations"), reservation);
+        form.reset();
+        successMessage.style.display = "block";
+      } catch (err) {
+        console.error("Error adding reservation:", err);
+        errorMessage.style.display = "block";
+      }
+    });
+  </script>
+</body>
+</html>
