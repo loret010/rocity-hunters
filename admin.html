@@ -85,28 +85,30 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    async function login() {
-      const userInput = document.getElementById("username").value.trim();
-      const passInput = document.getElementById("password").value;
-      const errorEl = document.getElementById("error");
+   async function login() {
+  const userInput = document.getElementById("username").value.trim();
+  const passInput = document.getElementById("password").value;
+  const errorEl = document.getElementById("error");
 
-      const snapshot = await getDocs(collection(db, "staff"));
-      let success = false;
+  const snapshot = await getDocs(collection(db, "staff"));
 
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        if (data.username === userInput && data.password === passInput) {
-          success = true;
-          localStorage.setItem("loggedInUser", userInput);
-          localStorage.setItem("role", data.role || "staff");
-          window.location.href = "reservations.html";
-        }
-      });
+  let foundUser = null;
 
-      if (!success) {
-        errorEl.textContent = "Incorrect username or password.";
-      }
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    if (data.username === userInput && data.password === passInput) {
+      foundUser = data;
     }
+  });
+
+  if (foundUser) {
+    localStorage.setItem("loggedInUser", userInput);
+    localStorage.setItem("role", foundUser.role || "staff");
+    window.location.href = "reservations.html";
+  } else {
+    errorEl.textContent = "Incorrect username or password.";
+  }
+}
 
     function logout() {
       localStorage.removeItem("loggedInUser");
