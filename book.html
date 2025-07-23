@@ -11,25 +11,6 @@
       margin: 0;
       padding: 20px;
     }
-    /* Fixed home button in top-left corner */
-    #homeButton {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      background: #1b1b1b;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 16px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: background 0.3s ease;
-      z-index: 1000;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    }
-    #homeButton:hover {
-      background: #333;
-    }
     main {
       max-width: 600px;
       margin: 0 auto;
@@ -37,7 +18,7 @@
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      margin-top: 60px; /* So content doesn’t get hidden behind fixed button */
+      position: relative;
     }
     label {
       display: block;
@@ -52,7 +33,7 @@
       border: 1px solid #ccc;
       border-radius: 4px;
     }
-    button[type="submit"] {
+    button {
       margin-top: 20px;
       padding: 12px;
       font-size: 18px;
@@ -63,7 +44,7 @@
       cursor: pointer;
       transition: background 0.3s ease;
     }
-    button[type="submit"]:hover {
+    button:hover {
       background: #333;
     }
     #success-message {
@@ -76,14 +57,28 @@
       color: red;
       font-weight: bold;
     }
+    #homeButton {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: #1b1b1b;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s ease;
+    }
+    #homeButton:hover {
+      background: #333;
+    }
   </style>
 </head>
 <body>
-
-  <button id="homeButton" onclick="goHome()">🏠 Home</button>
-
   <main>
-    <h1>Book a Room at Hunter's Hotel</h1>
+    <button id="homeButton" onclick="goHome()">🏠 Home</button>
+    <h1 style="margin-top: 60px;">Book a Room at Hunter's Hotel</h1>
     <form id="bookingForm">
       <label for="name">Name</label>
       <input type="text" id="name" required />
@@ -120,89 +115,77 @@
   </main>
 
   <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyAK-baJsRLyBp8EFmtWFqOmjTxjALTRl6Q",
-    authDomain: "hunter-s-2e810.firebaseapp.com",
-    projectId: "hunter-s-2e810",
-    storageBucket: "hunter-s-2e810.appspot.com",
-    messagingSenderId: "897135124770",
-    appId: "1:897135124770:web:7018fb47a4ec4d7c52857b",
-    measurementId: "G-QRG84T7LLQ"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  const form = document.getElementById("bookingForm");
-  const successMessage = document.getElementById("success-message");
-  const errorMessage = document.getElementById("error-message");
-
-  const DISCORD_WEBHOOK_URL = "YOUR_DISCORD_WEBHOOK_URL";  // Replace with your Discord Webhook URL
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    successMessage.style.display = "none";
-    errorMessage.style.display = "none";
-
-    const data = {
-      name: document.getElementById("name").value.trim(),
-      discordUser: document.getElementById("discordUser").value.trim(),
-      robloxUser: document.getElementById("robloxUser").value.trim(),
-      roomType: document.getElementById("roomType").value,
-      checkIn: document.getElementById("checkIn").value,
-      checkOut: document.getElementById("checkOut").value,
-      notes: document.getElementById("notes").value.trim(),
-      timestamp: new Date().toISOString()
+    const firebaseConfig = {
+      apiKey: "AIzaSyAK-baJsRLyBp8EFmtWFqOmjTxjALTRl6Q",
+      authDomain: "hunter-s-2e810.firebaseapp.com",
+      projectId: "hunter-s-2e810",
+      storageBucket: "hunter-s-2e810.appspot.com",
+      messagingSenderId: "897135124770",
+      appId: "1:897135124770:web:7018fb47a4ec4d7c52857b",
+      measurementId: "G-QRG84T7LLQ"
     };
 
-    try {
-      // Send reservation data to Firestore
-      await addDoc(collection(db, "reservations"), data);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-      // Send notification to Discord
-      await sendToDiscord(data);
+    const form = document.getElementById("bookingForm");
+    const successMessage = document.getElementById("success-message");
+    const errorMessage = document.getElementById("error-message");
 
-      successMessage.style.display = "block";
-      form.reset();
-    } catch (err) {
-      errorMessage.textContent = "Error submitting reservation: " + err.message;
-      errorMessage.style.display = "block";
-    }
-  });
+    async function sendToDiscord(data) {
+      const webhookUrl = "https://discord.com/api/webhooks/1397502789977899101/idvgRaQHG2zBPBL8tkodvsulbbryZ5susSj355kRyv9AuPcKj8-tCtr947DF6MqfW4yz";
+      const content = `
+📢 **New Hotel Reservation**
+👤 Name: ${data.name}
+💬 Discord: ${data.discordUser}
+🕹️ Roblox: ${data.robloxUser}
+🛏️ Room: ${data.roomType}
+📅 Check-in: ${data.checkIn}
+📅 Check-out: ${data.checkOut}
+📝 Notes: ${data.notes || 'None'}
+      `;
 
-  // Function to send a message to the Discord Webhook
-  async function sendToDiscord(data) {
-    const message = {
-      content: `**New Reservation**\n\n` +
-               `**Name**: ${data.name}\n` +
-               `**Discord User**: ${data.discordUser}\n` +
-               `**Roblox User**: ${data.robloxUser}\n` +
-               `**Room Type**: ${data.roomType}\n` +
-               `**Check-in**: ${data.checkIn}\n` +
-               `**Check-out**: ${data.checkOut}\n` +
-               `**Notes**: ${data.notes || "None"}\n\n` +
-               `Timestamp: ${new Date().toLocaleString()}\n`
-    };
-
-    try {
-      await fetch(https://discord.com/api/webhooks/1397502789977899101/idvgRaQHG2zBPBL8tkodvsulbbryZ5susSj355kRyv9AuPcKj8-tCtr947DF6MqfW4yz, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(message)
+      await fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content })
       });
-    } catch (error) {
-      console.error("Error sending Discord webhook:", error);
     }
-  }
 
-  function goHome() {
-    window.location.href = "index.html";
-  }
-</script>
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
+      successMessage.style.display = "none";
+      errorMessage.style.display = "none";
+
+      const data = {
+        name: document.getElementById("name").value.trim(),
+        discordUser: document.getElementById("discordUser").value.trim(),
+        robloxUser: document.getElementById("robloxUser").value.trim(),
+        roomType: document.getElementById("roomType").value,
+        checkIn: document.getElementById("checkIn").value,
+        checkOut: document.getElementById("checkOut").value,
+        notes: document.getElementById("notes").value.trim(),
+        timestamp: new Date().toISOString()
+      };
+
+      try {
+        await addDoc(collection(db, "reservations"), data);
+        await sendToDiscord(data);
+        successMessage.style.display = "block";
+        form.reset();
+      } catch (err) {
+        errorMessage.textContent = "Error submitting reservation: " + err.message;
+        errorMessage.style.display = "block";
+      }
+    });
+
+    function goHome() {
+      window.location.href = "index.html";
+    }
+  </script>
 </body>
 </html>
