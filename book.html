@@ -10,6 +10,7 @@
       background: #f8f8f8;
       margin: 0;
       padding: 20px;
+      position: relative;
     }
     main {
       max-width: 600px;
@@ -70,11 +71,10 @@
       font-size: 16px;
       cursor: pointer;
       transition: background 0.3s ease;
-  }
-  #homeButton:hover {
-    background: #333;
-}
-
+      display: inline-block;
+    }
+    #homeButton:hover {
+      background: #333;
     }
   </style>
 </head>
@@ -119,7 +119,14 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      getDocs,
+      query,
+      where
+    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAK-baJsRLyBp8EFmtWFqOmjTxjALTRl6Q",
@@ -138,13 +145,58 @@
     const successMessage = document.getElementById("success-message");
     const errorMessage = document.getElementById("error-message");
 
+    // Total rooms available per type
+    const totalRooms = {
+      Standard: 8,
+      Family: 5,
+      Executive: 3,
+      Suite: 3
+    };
+
+    // Helper to parse date strings into Date objects
+    function parseDate(dateStr) {
+      const [year, month, day] = dateStr.split("-");
+      return new Date(year, month - 1, day);
+    }
+
+    // Check if two date ranges overlap
+    function datesOverlap(startA, endA, startB, endB) {
+      return startA <= endB && endA >= startB;
+    }
+
+    async function isRoomAvailable(roomType, checkInStr, checkOutStr) {
+      const checkIn = parseDate(checkInStr);
+      const checkOut = parseDate(checkOutStr);
+
+      const reservationsRef = collection(db, "reservations");
+      const q = query(reservationsRef, where("roomType", "==", roomType));
+      const snapshot = await getDocs(q);
+
+      let overlappingCount = 0;
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        if (!data.checkIn || !data.checkOut) return;
+
+        const existingCheckIn = parseDate(data.checkIn);
+        const existingCheckOut = parseDate(data.checkOut);
+
+        if (datesOverlap(checkIn, checkOut, existingCheckIn, existingCheckOut)) {
+          overlappingCount++;
+        }
+      });
+
+      return overlappingCount < totalRooms[roomType];
+    }
+
     function formatDate(dateStr) {
       const [yyyy, mm, dd] = dateStr.split("-");
       return `${dd}-${mm}-${yyyy}`;
     }
 
     async function sendToDiscord(data) {
-      const webhookUrl = "https://discord.com/api/webhooks/1397502789977899101/idvgRaQHG2zBPBL8tkodvsulbbryZ5susSj355kRyv9AuPcKj8-tCtr947DF6MqfW4yz"; // Replace with your actual webhook
+      const webhookUrl = "https://discord.com/api/webhooks/1397502789977899101/idvgRaQHG2zBPBL8tkodvsulbbryZ5susSj355kRyv9AuPcKj8-tCtr947DF6MqfW4yz"; // Replace with your actual webhook URL
+
       const message = `
 ## 📢 **New Hotel Reservation**
 <@&1383741226699722807>
@@ -183,6 +235,21 @@
         timestamp: new Date().toISOString()
       };
 
+      // Validate date order
+      if (parseDate(data.checkIn) > parseDate(data.checkOut)) {
+        errorMessage.textContent = "Check-out date must be after check-in date.";
+        errorMessage.style.display = "block";
+        return;
+      }
+
+      // Check room availability
+      const available = await isRoomAvailable(data.roomType, data.checkIn, data.checkOut);
+      if (!available) {
+        errorMessage.textContent = `Sorry, all ${data.roomType} rooms are booked for those dates.`;
+        errorMessage.style.display = "block";
+        return;
+      }
+
       try {
         await addDoc(collection(db, "reservations"), data);
         await sendToDiscord(data);
@@ -193,10 +260,6 @@
         errorMessage.style.display = "block";
       }
     });
-
-    function goHome() {
-      window.location.href = "index.html";
-    }
   </script>
 </body>
 </html>
