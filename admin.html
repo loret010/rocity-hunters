@@ -154,3 +154,71 @@
 
 </body>
 </html>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+  import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAK-baJsRLyBp8EFmtWFqOmjTxjALTRl6Q",
+    authDomain: "hunter-s-2e810.firebaseapp.com",
+    projectId: "hunter-s-2e810",
+    storageBucket: "hunter-s-2e810.appspot.com",
+    messagingSenderId: "897135124770",
+    appId: "1:897135124770:web:7018fb47a4ec4d7c52857b",
+    measurementId: "G-QRG84T7LLQ"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  window.login = async function () {
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const errorEl = document.getElementById("login-error");
+
+    const q = query(collection(db, "staffUsers"), where("username", "==", username));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      errorEl.textContent = "User not found.";
+      return;
+    }
+
+    let userData;
+    querySnapshot.forEach((doc) => {
+      userData = doc.data();
+    });
+
+    if (userData.password === password) {
+      // Hide login, show dashboard
+      document.getElementById("login-section").style.display = "none";
+      showReservations(userData.role); // Custom function to load reservations
+    } else {
+      errorEl.textContent = "Incorrect password.";
+    }
+  };
+
+  async function showReservations(role) {
+    const reservationsEl = document.createElement("div");
+    reservationsEl.innerHTML = "<h3>Reservations</h3>";
+    const reservations = await getDocs(collection(db, "reservations"));
+
+    reservations.forEach((doc) => {
+      const data = doc.data();
+      const entry = document.createElement("div");
+      entry.innerHTML = `
+        <p><strong>Name:</strong> ${data.name} | <strong>Room:</strong> ${data.roomType}</p>
+        ${role === "manager" ? `<button onclick="deleteReservation('${doc.id}')">Delete</button>` : ""}
+      `;
+      reservationsEl.appendChild(entry);
+    });
+
+    document.body.appendChild(reservationsEl);
+  }
+
+  window.deleteReservation = async function (docId) {
+    const { deleteDoc, doc } = await import("https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js");
+    await deleteDoc(doc(db, "reservations", docId));
+    alert("Reservation deleted. Refresh the page to update.");
+  };
+</script>
