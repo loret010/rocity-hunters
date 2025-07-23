@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Admin - Hunter's</title>
+  <title>Reservations Admin - Hunter's</title>
   <style>
     body {
       font-family: sans-serif;
@@ -114,7 +114,7 @@
 </head>
 <body>
   <header>
-    <h1>Hunter's Hotel Admin</h1>
+    <h1>Hunter's Staff Only Login</h1>
   </header>
 
   <div class="top-buttons" id="topButtons" style="display:none;">
@@ -159,6 +159,7 @@
           <th>Roblox User</th>
           <th>Date</th>
           <th>Time</th>
+          <th>Timezone</th>
           <th>Guests</th>
           <th>Notes</th>
           <th>Action</th>
@@ -283,6 +284,7 @@
           <td>${data.robloxUser || ""}</td>
           <td>${formatDate(data.date)}</td>
           <td>${data.time || ""}</td>
+          <td>${data.timezone || ""}</td>
           <td>${data.guests || ""}</td>
           <td>${data.notes || ""}</td>
           <td>
