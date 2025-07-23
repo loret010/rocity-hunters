@@ -1,116 +1,178 @@
+<!-- Full updated admin.html below -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Admin Panel - Hunter's Hotel</title>
+  <title>Admin - Hunter's</title>
   <style>
     body {
       font-family: sans-serif;
-      background: #f8f8f8;
+      background: #f5f5f5;
       margin: 0;
       padding: 20px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
-    main {
-      max-width: 1000px;
+    header {
+      background: #1b1b1b;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgb(0 0 0 / 0.3);
+      user-select: none;
+    }
+    .top-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .top-buttons button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      background: #1b1b1b;
+      color: white;
+      box-shadow: 0 3px 8px rgb(0 0 0 / 0.3);
+      transition: background-color 0.3s ease;
+    }
+    .top-buttons button:hover {
+      background: #333;
+    }
+    #login-section, #reservations-section {
+      max-width: 900px;
       margin: 0 auto;
       background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      position: relative;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgb(0 0 0 / 0.12);
+      overflow-x: auto;
+      flex-grow: 1;
     }
-    h1 {
-      text-align: center;
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 12px 0;
+      font-size: 16px;
+      box-sizing: border-box;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      transition: border-color 0.3s ease;
+    }
+    input:focus {
+      border-color: #1b1b1b;
+      outline: none;
+      box-shadow: 0 0 6px #1b1b1baa;
+    }
+    .error {
+      color: red;
+      margin-top: 10px;
+      font-weight: 600;
     }
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
+      min-width: 800px;
     }
     th, td {
       padding: 12px;
-      border: 1px solid #ccc;
+      border: 1px solid #ddd;
       text-align: left;
+      white-space: nowrap;
     }
     th {
-      background: #f0f0f0;
-    }
-    .section-title {
-      margin-top: 40px;
-      font-size: 24px;
-      border-bottom: 2px solid #ccc;
-      padding-bottom: 6px;
-    }
-    #logoutButton, #homeButton {
-      position: absolute;
-      top: 20px;
       background: #1b1b1b;
       color: white;
+      user-select: none;
+    }
+    .delete-btn {
+      background: #e74c3c;
+      color: white;
       border: none;
-      border-radius: 8px;
-      padding: 10px 16px;
-      font-size: 16px;
+      padding: 8px 14px;
+      border-radius: 12px;
       cursor: pointer;
-      transition: background 0.3s ease;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
     }
-    #logoutButton:hover, #homeButton:hover {
-      background: #333;
+    .delete-btn:hover {
+      background: #c0392b;
     }
-    #logoutButton {
-      right: 20px;
-    }
-    #homeButton {
-      left: 20px;
+    h3 {
+      margin-top: 40px;
     }
   </style>
 </head>
 <body>
-  <main>
-    <button id="homeButton">🏠 Home</button>
-    <button id="logoutButton">🔒 Logout</button>
-    <h1>Admin Panel</h1>
+  <header>
+    <h1>Hunter's Hotel Admin</h1>
+  </header>
 
-    <div>
-      <div class="section-title">🏨 Hotel Reservations</div>
-      <table id="hotelTable">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Discord</th>
-            <th>Roblox</th>
-            <th>Room Type</th>
-            <th>Check-In</th>
-            <th>Check-Out</th>
-            <th>Notes</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
+  <div class="top-buttons" id="topButtons" style="display:none;">
+    <button onclick="goHome()">🏠 Home</button>
+    <button onclick="logout()">🚪 Logout</button>
+  </div>
 
-    <div>
-      <div class="section-title">🍽️ Restaurant Reservations</div>
-      <table id="restaurantTable">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Discord</th>
-            <th>Roblox</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Notes</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </main>
+  <!-- Login Section -->
+  <div id="login-section">
+    <h2>Admin Login</h2>
+    <input type="text" id="username" placeholder="Username" autocomplete="username" />
+    <input type="password" id="password" placeholder="Password" autocomplete="current-password" />
+    <button id="loginButton">Login</button>
+    <p class="error" id="login-error"></p>
+  </div>
+
+  <!-- Reservations Section -->
+  <div id="reservations-section" style="display:none;">
+    <h2>Hotel Reservations</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Discord User</th>
+          <th>Roblox User</th>
+          <th>Room Type</th>
+          <th>Check-in</th>
+          <th>Check-out</th>
+          <th>Notes</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="reservations-table-body"></tbody>
+    </table>
+
+    <h3>Restaurant Reservations</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Discord User</th>
+          <th>Roblox User</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Guests</th>
+          <th>Notes</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="restaurant-table-body"></tbody>
+    </table>
+  </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
     import {
-      getFirestore, collection, getDocs
+      getFirestore, collection, getDocs, query, where,
+      deleteDoc, doc
     } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -125,65 +187,137 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    const hotelTableBody = document.querySelector("#hotelTable tbody");
-    const restaurantTableBody = document.querySelector("#restaurantTable tbody");
+    const loginSection = document.getElementById("login-section");
+    const reservationsSection = document.getElementById("reservations-section");
+    const loginError = document.getElementById("login-error");
+    const reservationsTableBody = document.getElementById("reservations-table-body");
+    const restaurantTableBody = document.getElementById("restaurant-table-body");
+    const topButtons = document.getElementById("topButtons");
 
-    function formatDate(dateStr) {
-      if (!dateStr) return "";
-      const [yyyy, mm, dd] = dateStr.split("-");
-      return `${dd}-${mm}-${yyyy}`;
+    document.getElementById("loginButton").addEventListener("click", login);
+
+    window.onload = () => {
+      const loggedInUser = localStorage.getItem("loggedInUser");
+      const role = localStorage.getItem("role");
+      if (loggedInUser && role) {
+        showReservations(role);
+      }
+    };
+
+    function formatDate(yyyy_mm_dd) {
+      if (!yyyy_mm_dd) return "";
+      const parts = yyyy_mm_dd.split("-");
+      return `${parts[2]}-${parts[1]}-${parts[0]}`;
     }
 
-    async function loadReservations() {
-      // Hotel Reservations
-      const hotelSnapshot = await getDocs(collection(db, "reservations"));
-      hotelSnapshot.forEach((doc) => {
-        const d = doc.data();
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${d.name}</td>
-          <td>${d.discordUser || "N/A"}</td>
-          <td>${d.robloxUser || "N/A"}</td>
-          <td>${d.roomType}</td>
-          <td>${formatDate(d.checkIn)}</td>
-          <td>${formatDate(d.checkOut)}</td>
-          <td>${d.notes || "—"}</td>
-        `;
-        hotelTableBody.appendChild(tr);
+    async function login() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+
+      loginError.textContent = "";
+      if (!username || !password) {
+        loginError.textContent = "Please enter both username and password.";
+        return;
+      }
+
+      const staffRef = collection(db, "staff");
+      const q = query(staffRef, where("username", "==", username));
+      const snapshot = await getDocs(q);
+
+      if (snapshot.empty) {
+        loginError.textContent = "User not found.";
+        return;
+      }
+
+      let userData = null;
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        if (data.password === password) {
+          userData = data;
+        }
       });
 
-      // Restaurant Reservations
-      const restaurantSnapshot = await getDocs(collection(db, "restaurant_reservations"));
-      restaurantSnapshot.forEach((doc) => {
-        const d = doc.data();
+      if (userData) {
+        localStorage.setItem("loggedInUser", username);
+        localStorage.setItem("role", userData.role || "staff");
+        showReservations(userData.role);
+      } else {
+        loginError.textContent = "Incorrect password.";
+      }
+    }
+
+    async function showReservations(role) {
+      loginSection.style.display = "none";
+      reservationsSection.style.display = "block";
+      topButtons.style.display = "flex";
+      reservationsTableBody.innerHTML = "";
+      restaurantTableBody.innerHTML = "";
+
+      const hotelSnapshot = await getDocs(collection(db, "reservations"));
+      hotelSnapshot.forEach(docSnap => {
+        const data = docSnap.data();
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td>${d.name}</td>
-          <td>${d.discordUser || "N/A"}</td>
-          <td>${d.robloxUser || "N/A"}</td>
-          <td>${formatDate(d.date)}</td>
-          <td>${d.time}</td>
-          <td>${d.notes || "—"}</td>
-        `;
+          <td>${data.name || ""}</td>
+          <td>${data.discordUser || ""}</td>
+          <td>${data.robloxUser || ""}</td>
+          <td>${data.roomType || ""}</td>
+          <td>${formatDate(data.checkIn)}</td>
+          <td>${formatDate(data.checkOut)}</td>
+          <td>${data.notes || ""}</td>
+          <td>
+            ${role === "manager"
+              ? `<button class="delete-btn" onclick="deleteReservation('${docSnap.id}', 'reservations')">Delete</button>`
+              : "—"}
+          </td>`;
+        reservationsTableBody.appendChild(tr);
+      });
+
+      const restaurantSnapshot = await getDocs(collection(db, "restaurant_reservations"));
+      restaurantSnapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${data.name || ""}</td>
+          <td>${data.discordUser || ""}</td>
+          <td>${data.robloxUser || ""}</td>
+          <td>${formatDate(data.date)}</td>
+          <td>${data.time || ""}</td>
+          <td>${data.guests || ""}</td>
+          <td>${data.notes || ""}</td>
+          <td>
+            ${role === "manager"
+              ? `<button class="delete-btn" onclick="deleteReservation('${docSnap.id}', 'restaurant_reservations')">Delete</button>`
+              : "—"}
+          </td>`;
         restaurantTableBody.appendChild(tr);
       });
     }
 
-    document.getElementById("logoutButton").addEventListener("click", () => {
-      localStorage.removeItem("adminLoggedIn");
-      window.location.href = "index.html";
-    });
+    window.deleteReservation = async function (id, collectionName) {
+      if (confirm("Are you sure you want to delete this reservation?")) {
+        await deleteDoc(doc(db, collectionName, id));
+        showReservations(localStorage.getItem("role"));
+      }
+    };
 
-    document.getElementById("homeButton").addEventListener("click", () => {
-      window.location.href = "index.html";
-    });
-
-    if (localStorage.getItem("adminLoggedIn") !== "true") {
-      alert("You must be logged in to access the admin panel.");
-      window.location.href = "index.html";
-    } else {
-      loadReservations();
+    function logout() {
+      localStorage.removeItem("loggedInUser");
+      localStorage.removeItem("role");
+      loginSection.style.display = "block";
+      reservationsSection.style.display = "none";
+      topButtons.style.display = "none";
+      loginError.textContent = "";
+      document.getElementById("username").value = "";
+      document.getElementById("password").value = "";
     }
+
+    function goHome() {
+      window.location.href = "index.html";
+    }
+
+    window.logout = logout;
+    window.goHome = goHome;
   </script>
 </body>
 </html>
