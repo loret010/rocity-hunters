@@ -133,10 +133,8 @@
     const reservationsTableBody = document.getElementById("reservations-table-body");
     const topButtons = document.getElementById("topButtons");
 
-    // Attach event listener for login button
     document.getElementById("loginButton").addEventListener("click", login);
 
-    // Check if user is already logged in on page load
     window.onload = () => {
       const loggedInUser = localStorage.getItem("loggedInUser");
       const role = localStorage.getItem("role");
@@ -173,7 +171,6 @@
       });
 
       if (userData) {
-        // Save login info
         localStorage.setItem("loggedInUser", username);
         localStorage.setItem("role", userData.role || "staff");
         showReservations(userData.role);
@@ -187,7 +184,6 @@
       reservationsSection.style.display = "block";
       topButtons.style.display = "flex";
 
-      // Clear table body
       reservationsTableBody.innerHTML = "";
 
       const snapshot = await getDocs(collection(db, "reservations"));
@@ -216,7 +212,6 @@
     window.deleteReservation = async function (id) {
       if (confirm("Are you sure you want to delete this reservation?")) {
         await deleteDoc(doc(db, "reservations", id));
-        // Refresh reservations list after deletion
         showReservations(localStorage.getItem("role"));
       }
     };
@@ -235,6 +230,10 @@
     function goHome() {
       window.location.href = "index.html";
     }
+
+    // Expose functions globally for inline onclick handlers
+    window.logout = logout;
+    window.goHome = goHome;
   </script>
 </body>
 </html>
