@@ -2,86 +2,147 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Hunter's Hotel Booking</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Book a Room - Hunter's Hotel</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; max-width: 500px; margin: auto; }
-    label, input, select, textarea, button { display: block; width: 100%; margin-bottom: 15px; }
-    button { padding: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
-    button:hover { background: #0056b3; }
+    body {
+      font-family: sans-serif;
+      background: #f8f8f8;
+      margin: 0;
+      padding: 20px;
+    }
+    main {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin: 12px 0 4px;
+      font-weight: bold;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      font-size: 18px;
+      background: #1b1b1b;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:disabled {
+      background: #888;
+      cursor: not-allowed;
+    }
+    #success-message {
+      margin-top: 20px;
+      color: green;
+      font-weight: bold;
+    }
+    #error-message {
+      margin-top: 20px;
+      color: red;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
+  <main>
+    <h1>Book a Room at Hunter's Hotel</h1>
+    <form id="bookingForm">
+      <label for="name">Name</label>
+      <input type="text" id="name" required />
 
-<h2>Hotel Booking</h2>
+      <label for="discordUser">Discord User</label>
+      <input type="text" id="discordUser" placeholder="username#1234" />
 
-<form id="bookingForm">
-  <label for="name">Name</label>
-  <input type="text" id="name" required />
+      <label for="robloxUser">Roblox User</label>
+      <input type="text" id="robloxUser" placeholder="Roblox username" />
 
-  <label for="room">Room Type</label>
-  <select id="room" required>
-    <option value="">Select a room</option>
-    <option value="Standard">Standard Room</option>
-    <option value="Family">Family Room</option>
-    <option value="Executive">Executive Room</option>
-    <option value="Suite">Suite</option>
-  </select>
+      <label for="roomType">Room Type</label>
+      <select id="roomType" required>
+        <option value="">Select room type</option>
+        <option value="Standard">Standard</option>
+        <option value="Family">Family</option>
+        <option value="Executive">Executive</option>
+        <option value="Suite">Suite</option>
+      </select>
 
-  <label for="checkin">Check-In Date</label>
-  <input type="date" id="checkin" required />
+      <label for="checkIn">Check-in Date</label>
+      <input type="date" id="checkIn" required />
 
-  <label for="checkout">Check-Out Date</label>
-  <input type="date" id="checkout" required />
+      <label for="checkOut">Check-out Date</label>
+      <input type="date" id="checkOut" required />
 
-  <label for="notes">Special Requests (optional, please put your Roblox & Discord usernames here, even if you don't want to make any special requests.)</label>
-  <textarea id="notes"></textarea>
+      <label for="notes">Additional Notes</label>
+      <textarea id="notes" rows="4" placeholder="Any special requests?"></textarea>
 
-  <button type="submit">Submit Booking</button>
-</form>
+      <button type="submit">Submit Reservation</button>
+    </form>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+    <p id="success-message" style="display:none;">Reservation submitted successfully!</p>
+    <p id="error-message" style="display:none;"></p>
+  </main>
 
-  // Your Firebase config here
-  const firebaseConfig = {
-    apiKey: "AIzaSyAK-baJsRLyBp8EFmtWFqOmjTxjALTRl6Q",
-    authDomain: "hunter-s-2e810.firebaseapp.com",
-    projectId: "hunter-s-2e810",
-    storageBucket: "hunter-s-2e810.firebasestorage.app",
-    messagingSenderId: "897135124770",
-    appId: "1:897135124770:web:7018fb47a4ec4d7c52857b",
-    measurementId: "G-QRG84T7LLQ"
-  };
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-  // Initialize Firebase app and Firestore
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  const form = document.getElementById('bookingForm');
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const bookingData = {
-      name: form.name.value.trim(),
-      room: form.room.value,
-      checkin: form.checkin.value,
-      checkout: form.checkout.value,
-      notes: form.notes.value.trim(),
-      timestamp: serverTimestamp()
+    const firebaseConfig = {
+      apiKey: "AIzaSyAK-baJsRLyBp8EFmtWFqOmjTxjALTRl6Q",
+      authDomain: "hunter-s-2e810.firebaseapp.com",
+      projectId: "hunter-s-2e810",
+      storageBucket: "hunter-s-2e810.appspot.com",
+      messagingSenderId: "897135124770",
+      appId: "1:897135124770:web:7018fb47a4ec4d7c52857b",
+      measurementId: "G-QRG84T7LLQ"
     };
 
-    try {
-      await addDoc(collection(db, "reservations"), bookingData);
-      alert("Booking submitted successfully!");
-      form.reset();
-    } catch (error) {
-      console.error("Error submitting booking: ", error);
-      alert("Error submitting booking. Please try again.");
-    }
-  });
-</script>
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
+    const form = document.getElementById("bookingForm");
+    const successMessage = document.getElementById("success-message");
+    const errorMessage = document.getElementById("error-message");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      successMessage.style.display = "none";
+      errorMessage.style.display = "none";
+
+      const data = {
+        name: document.getElementById("name").value.trim(),
+        discordUser: document.getElementById("discordUser").value.trim(),
+        robloxUser: document.getElementById("robloxUser").value.trim(),
+        roomType: document.getElementById("roomType").value,
+        checkIn: document.getElementById("checkIn").value,
+        checkOut: document.getElementById("checkOut").value,
+        notes: document.getElementById("notes").value.trim(),
+        timestamp: new Date().toISOString()
+      };
+
+      try {
+        await addDoc(collection(db, "reservations"), data);
+        successMessage.style.display = "block";
+        form.reset();
+      } catch (err) {
+        errorMessage.textContent = "Error submitting reservation: " + err.message;
+        errorMessage.style.display = "block";
+      }
+    });
+  </script>
 </body>
 </html>
