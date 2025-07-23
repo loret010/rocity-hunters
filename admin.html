@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Admin - Hunter's</title>
+  <title>Admin - Hunter's Hotel</title>
   <style>
     body {
       font-family: sans-serif;
@@ -85,7 +85,7 @@
     <h2>Admin Login</h2>
     <input type="text" id="username" placeholder="Username" autocomplete="username" />
     <input type="password" id="password" placeholder="Password" autocomplete="current-password" />
-    <button onclick="login()">Login</button>
+    <button id="loginButton">Login</button>
     <p class="error" id="login-error"></p>
   </div>
 
@@ -132,6 +132,9 @@
     const loginError = document.getElementById("login-error");
     const reservationsTableBody = document.getElementById("reservations-table-body");
     const topButtons = document.getElementById("topButtons");
+
+    // Attach event listener for login button
+    document.getElementById("loginButton").addEventListener("click", login);
 
     // Check if user is already logged in on page load
     window.onload = () => {
@@ -210,13 +213,13 @@
       });
     }
 
-    async function deleteReservation(id) {
+    window.deleteReservation = async function (id) {
       if (confirm("Are you sure you want to delete this reservation?")) {
         await deleteDoc(doc(db, "reservations", id));
         // Refresh reservations list after deletion
         showReservations(localStorage.getItem("role"));
       }
-    }
+    };
 
     function logout() {
       localStorage.removeItem("loggedInUser");
