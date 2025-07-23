@@ -39,12 +39,12 @@
       background: #1b1b1b;
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
+      transition: background 0.3s ease;
     }
-    button:disabled {
-      background: #888;
-      cursor: not-allowed;
+    button:hover {
+      background: #333;
     }
     #success-message {
       margin-top: 20px;
@@ -56,20 +56,39 @@
       color: red;
       font-weight: bold;
     }
+    /* Home button style */
+    #homeButton {
+      background: #1b1b1b;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-bottom: 20px;
+      display: inline-block;
+      transition: background 0.3s ease;
+      text-align: center;
+    }
+    #homeButton:hover {
+      background: #333;
+    }
   </style>
 </head>
 <body>
   <main>
+    <button id="homeButton" onclick="goHome()">🏠 Home</button>
+
     <h1>Book a Room at Hunter's Hotel</h1>
     <form id="bookingForm">
-      <label for="name">Name</label>
+      <label for="name">Full Name</label>
       <input type="text" id="name" required />
 
       <label for="discordUser">Discord User</label>
-      <input type="text" id="discordUser" placeholder="username#1234" />
+      <input type="text" id="discordUser" placeholder="(example: @loret010)" />
 
       <label for="robloxUser">Roblox User</label>
-      <input type="text" id="robloxUser" placeholder="Roblox username" />
+      <input type="text" id="robloxUser" placeholder="(example: @lore09201)" />
 
       <label for="roomType">Room Type</label>
       <select id="roomType" required>
@@ -143,6 +162,10 @@
         errorMessage.style.display = "block";
       }
     });
+
+    function goHome() {
+      window.location.href = "index.html";
+    }
   </script>
 </body>
 </html>
