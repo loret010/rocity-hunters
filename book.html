@@ -135,23 +135,30 @@
     const successMessage = document.getElementById("success-message");
     const errorMessage = document.getElementById("error-message");
 
+    function formatDate(dateStr) {
+      const [yyyy, mm, dd] = dateStr.split("-");
+      return `${dd}-${mm}-${yyyy}`;
+    }
+
     async function sendToDiscord(data) {
-      const webhookUrl = "https://discord.com/api/webhooks/1397502789977899101/idvgRaQHG2zBPBL8tkodvsulbbryZ5susSj355kRyv9AuPcKj8-tCtr947DF6MqfW4yz";
-      const content = `
-📢 **New Hotel Reservation**
+      const webhookUrl = "https://discord.com/api/webhooks/1397502789977899101/idvgRaQHG2zBPBL8tkodvsulbbryZ5susSj355kRyv9AuPcKj8-tCtr947DF6MqfW4yz"; // Replace with your actual webhook
+      const message = `
+📢 New Hotel Reservation
+\`\`\`
 👤 Name: ${data.name}
-💬 Discord: ${data.discordUser}
-🕹️ Roblox: ${data.robloxUser}
-🛏️ Room: ${data.roomType}
-📅 Check-in: ${data.checkIn}
-📅 Check-out: ${data.checkOut}
-📝 Notes: ${data.notes || 'None'}
-      `;
+💬 Discord: ${data.discordUser || "N/A"}
+🕹️ Roblox: ${data.robloxUser || "N/A"}
+🛏️ Room Type: ${data.roomType}
+📅 Check-in: ${formatDate(data.checkIn)}
+📅 Check-out: ${formatDate(data.checkOut)}
+📝 Notes: ${data.notes || "None"}
+\`\`\`
+      `.trim();
 
       await fetch(webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content })
+        body: JSON.stringify({ content: message })
       });
     }
 
