@@ -120,57 +120,89 @@
   </main>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAK-baJsRLyBp8EFmtWFqOmjTxjALTRl6Q",
-      authDomain: "hunter-s-2e810.firebaseapp.com",
-      projectId: "hunter-s-2e810",
-      storageBucket: "hunter-s-2e810.appspot.com",
-      messagingSenderId: "897135124770",
-      appId: "1:897135124770:web:7018fb47a4ec4d7c52857b",
-      measurementId: "G-QRG84T7LLQ"
+  const firebaseConfig = {
+    apiKey: "AIzaSyAK-baJsRLyBp8EFmtWFqOmjTxjALTRl6Q",
+    authDomain: "hunter-s-2e810.firebaseapp.com",
+    projectId: "hunter-s-2e810",
+    storageBucket: "hunter-s-2e810.appspot.com",
+    messagingSenderId: "897135124770",
+    appId: "1:897135124770:web:7018fb47a4ec4d7c52857b",
+    measurementId: "G-QRG84T7LLQ"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const form = document.getElementById("bookingForm");
+  const successMessage = document.getElementById("success-message");
+  const errorMessage = document.getElementById("error-message");
+
+  const DISCORD_WEBHOOK_URL = "YOUR_DISCORD_WEBHOOK_URL";  // Replace with your Discord Webhook URL
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    successMessage.style.display = "none";
+    errorMessage.style.display = "none";
+
+    const data = {
+      name: document.getElementById("name").value.trim(),
+      discordUser: document.getElementById("discordUser").value.trim(),
+      robloxUser: document.getElementById("robloxUser").value.trim(),
+      roomType: document.getElementById("roomType").value,
+      checkIn: document.getElementById("checkIn").value,
+      checkOut: document.getElementById("checkOut").value,
+      notes: document.getElementById("notes").value.trim(),
+      timestamp: new Date().toISOString()
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    try {
+      // Send reservation data to Firestore
+      await addDoc(collection(db, "reservations"), data);
 
-    const form = document.getElementById("bookingForm");
-    const successMessage = document.getElementById("success-message");
-    const errorMessage = document.getElementById("error-message");
+      // Send notification to Discord
+      await sendToDiscord(data);
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      successMessage.style.display = "none";
-      errorMessage.style.display = "none";
-
-      const data = {
-        name: document.getElementById("name").value.trim(),
-        discordUser: document.getElementById("discordUser").value.trim(),
-        robloxUser: document.getElementById("robloxUser").value.trim(),
-        roomType: document.getElementById("roomType").value,
-        checkIn: document.getElementById("checkIn").value,
-        checkOut: document.getElementById("checkOut").value,
-        notes: document.getElementById("notes").value.trim(),
-        timestamp: new Date().toISOString()
-      };
-
-      try {
-        await addDoc(collection(db, "reservations"), data);
-        successMessage.style.display = "block";
-        form.reset();
-      } catch (err) {
-        errorMessage.textContent = "Error submitting reservation: " + err.message;
-        errorMessage.style.display = "block";
-      }
-    });
-
-    function goHome() {
-      window.location.href = "index.html";
+      successMessage.style.display = "block";
+      form.reset();
+    } catch (err) {
+      errorMessage.textContent = "Error submitting reservation: " + err.message;
+      errorMessage.style.display = "block";
     }
-    window.goHome = goHome;
-  </script>
+  });
+
+  // Function to send a message to the Discord Webhook
+  async function sendToDiscord(data) {
+    const message = {
+      content: `**New Reservation**\n\n` +
+               `**Name**: ${data.name}\n` +
+               `**Discord User**: ${data.discordUser}\n` +
+               `**Roblox User**: ${data.robloxUser}\n` +
+               `**Room Type**: ${data.roomType}\n` +
+               `**Check-in**: ${data.checkIn}\n` +
+               `**Check-out**: ${data.checkOut}\n` +
+               `**Notes**: ${data.notes || "None"}\n\n` +
+               `Timestamp: ${new Date().toLocaleString()}\n`
+    };
+
+    try {
+      await fetch(https://discord.com/api/webhooks/1397502789977899101/idvgRaQHG2zBPBL8tkodvsulbbryZ5susSj355kRyv9AuPcKj8-tCtr947DF6MqfW4yz, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(message)
+      });
+    } catch (error) {
+      console.error("Error sending Discord webhook:", error);
+    }
+  }
+
+  function goHome() {
+    window.location.href = "index.html";
+  }
+</script>
+
 </body>
 </html>
