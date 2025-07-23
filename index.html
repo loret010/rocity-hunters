@@ -37,37 +37,35 @@
     }
     main {
       flex-grow: 1;
-      max-width: 700px;
+      max-width: 900px;
       margin: 40px auto;
       background: white;
       padding: 30px;
       border-radius: 15px;
       box-shadow: 0 8px 20px rgb(0 0 0 / 0.1);
+      display: flex;
+      gap: 40px;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    section {
+      flex: 1;
+      min-width: 280px;
       text-align: center;
     }
-    footer {
-      background: #1b1b1b;
-      color: white;
-      text-align: center;
-      padding: 15px 10px;
-      margin-top: auto;
-      border-radius: 15px 15px 0 0;
-      box-shadow: 0 -4px 8px rgb(0 0 0 / 0.2);
-      font-size: 14px;
-    }
-    main p {
-      font-size: 18px;
-      color: #333;
-    }
-    main h2 {
+    section h2 {
       margin-bottom: 15px;
       font-weight: 700;
       color: #111;
     }
+    section p {
+      font-size: 16px;
+      color: #333;
+      margin-bottom: 25px;
+    }
     a button {
       padding: 15px 35px;
       font-size: 18px;
-      margin-top: 25px;
       background-color: #1b1b1b;
       border: none;
       color: white;
@@ -78,6 +76,16 @@
     }
     a button:hover {
       background-color: #333;
+    }
+    footer {
+      background: #1b1b1b;
+      color: white;
+      text-align: center;
+      padding: 15px 10px;
+      margin-top: auto;
+      border-radius: 15px 15px 0 0;
+      box-shadow: 0 -4px 8px rgb(0 0 0 / 0.2);
+      font-size: 14px;
     }
   </style>
 </head>
@@ -90,13 +98,25 @@
       <a href="admin.html">Admin Login</a>
     </nav>
   </header>
+
   <main>
-    <h2>Welcome to Hunter's</h2>
-    <p>Book a luxurious stay in RoCity. Choose from Standard, Family, Executive, and Suite rooms.</p>
-    <a href="book.html">
-      <button>Book Now</button>
-    </a>
+    <section id="restaurant-section">
+      <h2>Hunter's Restaurant</h2>
+      <p>Reserve your table now and enjoy exquisite dining experiences. Book your preferred time and number of guests.</p>
+      <a href="book_restaurant.html">
+        <button>Book a Table</button>
+      </a>
+    </section>
+
+    <section id="hotel-section">
+      <h2>Hunter's Grand Hotel</h2>
+      <p>Book a luxurious stay in RoCity. Choose from Standard, Family, Executive, and Suite rooms. Starting from $750.</p>
+      <a href="book.html">
+        <button>Book a Room</button>
+      </a>
+    </section>
   </main>
+
   <footer>
     &copy; 2025 Hunter's Franchise
   </footer>
