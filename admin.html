@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Admin - Hunter's Hotel</title>
+  <title>Admin - Hunter's</title>
   <style>
     body {
       font-family: sans-serif;
@@ -29,12 +29,13 @@
       font-size: 16px;
     }
     #login-section, #reservations-section {
-      max-width: 600px;
+      max-width: 900px;
       margin: 0 auto;
       background: white;
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      overflow-x: auto;
     }
     input {
       width: 100%;
@@ -51,11 +52,13 @@
       width: 100%;
       border-collapse: collapse;
       margin-top: 15px;
+      min-width: 800px;
     }
     th, td {
       padding: 10px;
       border: 1px solid #ddd;
       text-align: left;
+      white-space: nowrap;
     }
     th {
       background: #1b1b1b;
@@ -67,6 +70,7 @@
       border: none;
       padding: 6px 12px;
       border-radius: 4px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -96,6 +100,8 @@
       <thead>
         <tr>
           <th>Name</th>
+          <th>Discord User</th>
+          <th>Roblox User</th>
           <th>Room Type</th>
           <th>Check-in</th>
           <th>Check-out</th>
@@ -200,9 +206,11 @@
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td>${data.name || ""}</td>
-          <td>${data.room || ""}</td>
-          <td>${formatDate(data.checkin)}</td>
-          <td>${formatDate(data.checkout)}</td>
+          <td>${data.discordUser || ""}</td>
+          <td>${data.robloxUser || ""}</td>
+          <td>${data.roomType || ""}</td>
+          <td>${formatDate(data.checkIn)}</td>
+          <td>${formatDate(data.checkOut)}</td>
           <td>${data.notes || ""}</td>
           <td>
             ${
