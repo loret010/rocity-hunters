@@ -143,6 +143,13 @@
       }
     };
 
+    function formatDate(yyyy_mm_dd) {
+      if (!yyyy_mm_dd) return "";
+      const parts = yyyy_mm_dd.split("-");
+      if (parts.length !== 3) return yyyy_mm_dd;
+      return `${parts[2]}-${parts[1]}-${parts[0]}`;
+    }
+
     async function login() {
       const username = document.getElementById("username").value.trim();
       const password = document.getElementById("password").value;
@@ -194,8 +201,8 @@
         tr.innerHTML = `
           <td>${data.name || ""}</td>
           <td>${data.room || ""}</td>
-          <td>${data.checkin || ""}</td>
-          <td>${data.checkout || ""}</td>
+          <td>${formatDate(data.checkin)}</td>
+          <td>${formatDate(data.checkout)}</td>
           <td>${data.notes || ""}</td>
           <td>
             ${
