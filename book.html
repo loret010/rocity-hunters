@@ -10,7 +10,6 @@
       background: #f8f8f8;
       margin: 0;
       padding: 20px;
-      position: relative;
     }
     main {
       max-width: 600px;
@@ -71,7 +70,6 @@
       font-size: 16px;
       cursor: pointer;
       transition: background 0.3s ease;
-      display: inline-block;
     }
     #homeButton:hover {
       background: #333;
@@ -123,9 +121,9 @@
       getFirestore,
       collection,
       addDoc,
-      getDocs,
       query,
-      where
+      where,
+      getDocs
     } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -145,58 +143,13 @@
     const successMessage = document.getElementById("success-message");
     const errorMessage = document.getElementById("error-message");
 
-    // Total rooms available per type
-    const totalRooms = {
-      Standard: 8,
-      Family: 5,
-      Executive: 3,
-      Suite: 3
-    };
-
-    // Helper to parse date strings into Date objects
-    function parseDate(dateStr) {
-      const [year, month, day] = dateStr.split("-");
-      return new Date(year, month - 1, day);
-    }
-
-    // Check if two date ranges overlap
-    function datesOverlap(startA, endA, startB, endB) {
-      return startA <= endB && endA >= startB;
-    }
-
-    async function isRoomAvailable(roomType, checkInStr, checkOutStr) {
-      const checkIn = parseDate(checkInStr);
-      const checkOut = parseDate(checkOutStr);
-
-      const reservationsRef = collection(db, "reservations");
-      const q = query(reservationsRef, where("roomType", "==", roomType));
-      const snapshot = await getDocs(q);
-
-      let overlappingCount = 0;
-
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        if (!data.checkIn || !data.checkOut) return;
-
-        const existingCheckIn = parseDate(data.checkIn);
-        const existingCheckOut = parseDate(data.checkOut);
-
-        if (datesOverlap(checkIn, checkOut, existingCheckIn, existingCheckOut)) {
-          overlappingCount++;
-        }
-      });
-
-      return overlappingCount < totalRooms[roomType];
-    }
-
     function formatDate(dateStr) {
       const [yyyy, mm, dd] = dateStr.split("-");
       return `${dd}-${mm}-${yyyy}`;
     }
 
     async function sendToDiscord(data) {
-      const webhookUrl = "https://discord.com/api/webhooks/1397502789977899101/idvgRaQHG2zBPBL8tkodvsulbbryZ5susSj355kRyv9AuPcKj8-tCtr947DF6MqfW4yz"; // Replace with your actual webhook URL
-
+      const webhookUrl = "https://discord.com/api/webhooks/1397502789977899101/idvgRaQHG2zBPBL8tkodvsulbbryZ5susSj355kRyv9AuPcKj8-tCtr947DF6MqfW4yz";
       const message = `
 ## 📢 **New Hotel Reservation**
 <@&1383741226699722807>
@@ -235,22 +188,45 @@
         timestamp: new Date().toISOString()
       };
 
-      // Validate date order
-      if (parseDate(data.checkIn) > parseDate(data.checkOut)) {
-        errorMessage.textContent = "Check-out date must be after check-in date.";
-        errorMessage.style.display = "block";
-        return;
-      }
+      const roomLimits = {
+        Standard: 8,
+        Family: 5,
+        Executive: 3,
+        Suite: 3
+      };
 
-      // Check room availability
-      const available = await isRoomAvailable(data.roomType, data.checkIn, data.checkOut);
-      if (!available) {
-        errorMessage.textContent = `Sorry, all ${data.roomType} rooms are booked for those dates.`;
-        errorMessage.style.display = "block";
-        return;
-      }
+      const newCheckIn = new Date(data.checkIn);
+      const newCheckOut = new Date(data.checkOut);
 
       try {
+        const reservationsRef = collection(db, "reservations");
+        const q = query(
+          reservationsRef,
+          where("roomType", "==", data.roomType)
+        );
+        const querySnapshot = await getDocs(q);
+
+        let conflictCount = 0;
+
+        querySnapshot.forEach((doc) => {
+          const existing = doc.data();
+          const existingCheckIn = new Date(existing.checkIn);
+          const existingCheckOut = new Date(existing.checkOut);
+
+          const overlaps =
+            !(newCheckIn.getTime() === existingCheckOut.getTime()) &&
+            newCheckIn < existingCheckOut &&
+            newCheckOut > existingCheckIn;
+
+          if (overlaps) conflictCount++;
+        });
+
+        if (conflictCount >= roomLimits[data.roomType]) {
+          errorMessage.textContent = "All rooms of this type are booked for the selected dates.";
+          errorMessage.style.display = "block";
+          return;
+        }
+
         await addDoc(collection(db, "reservations"), data);
         await sendToDiscord(data);
         successMessage.style.display = "block";
