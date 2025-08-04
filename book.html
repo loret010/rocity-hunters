@@ -102,8 +102,13 @@
       <label for="checkIn">Check-in Date</label>
       <input type="date" id="checkIn" required />
 
-      <label for="checkOut">Check-out Date (make sure it's not the same as Check-in Date)</label>
-      <input type="date" id="checkOut" required />
+ <label for="checkOut">
+  Check-out Date<br />
+  <small style="color: red; font-size: 0.8em;">
+    Make sure it's not the same as check-in date or your reservation will be denied.
+  </small>
+</label>
+<input type="date" id="checkOut" required />
 
       <label for="notes">Additional Notes</label>
       <textarea id="notes" rows="4" placeholder="Any special requests? If not, you can leave this empty."></textarea>
@@ -188,20 +193,6 @@
         timestamp: new Date().toISOString()
       };
 
-      const newCheckIn = new Date(data.checkIn);
-      const newCheckOut = new Date(data.checkOut);
-
-      const newCheckIn = new Date(data.checkIn);
-const newCheckOut = new Date(data.checkOut);
-
-// Prevent same-day check-in/out
-if (newCheckIn.toDateString() === newCheckOut.toDateString()) {
-  errorMessage.textContent = "Check-in and check-out date cannot be the same.";
-  errorMessage.style.display = "block";
-  return;
-}
-
-
       const roomLimits = {
         Standard: 8,
         Family: 5,
@@ -209,9 +200,15 @@ if (newCheckIn.toDateString() === newCheckOut.toDateString()) {
         Suite: 3
       };
 
+      const newCheckIn = new Date(data.checkIn);
+      const newCheckOut = new Date(data.checkOut);
+
       try {
         const reservationsRef = collection(db, "reservations");
-        const q = query(reservationsRef, where("roomType", "==", data.roomType));
+        const q = query(
+          reservationsRef,
+          where("roomType", "==", data.roomType)
+        );
         const querySnapshot = await getDocs(q);
 
         let conflictCount = 0;
