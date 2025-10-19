@@ -28,7 +28,7 @@ body{
   padding:18px 24px;
   background:linear-gradient(180deg,var(--muted),#0b0b0b);
   border-bottom:6px solid var(--primary);
-  color: #000000;
+  color: #C41E3A;
   box-shadow: 0 6px 18px rgba(0,0,0,0.35);
   border-radius: 0 0 12px 12px;
 }
