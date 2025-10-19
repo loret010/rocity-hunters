@@ -1,0 +1,84 @@
+:root{
+  --bg:#000000;
+  --primary:#C41E3A; /* red */
+  --accent:#FFD700;  /* yellow */
+  --card:#0f0f0f;
+  --muted:#151515;
+}
+
+/* Layout */
+html,body{height:100%;}
+body{
+  margin:0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background:var(--bg);
+  color:var(--accent);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+.site-header{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:14px 20px;
+  background:linear-gradient(180deg,var(--muted),#0b0b0b);
+  border-bottom:4px solid var(--primary);
+}
+.site-header .logo{width:64px;height:64px;display:block}
+.site-header h1{font-size:20px;margin:0;color:var(--accent)}
+.site-nav{margin-left:auto;display:flex;gap:12px;align-items:center}
+.site-nav a{color:var(--accent);text-decoration:none;padding:6px 10px;border-radius:8px;transition:all .15s}
+.site-nav a:hover{background:rgba(255,215,0,0.06);color:var(--primary)}
+
+/* Cards / content */
+main, .card, #login-section, #reservations-section, main > div, .top-buttons{
+  background:linear-gradient(180deg, #0b0b0b, var(--card));
+  color:#fff;
+  border-radius:12px;
+  padding:18px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.6);
+}
+
+h2,h3,h1{color:var(--accent)}
+section p, p, label, input, select, textarea{color:#e6e6e6}
+
+/* Buttons */
+button, .btn, a button{
+  background:var(--primary);
+  color:var(--bg);
+  border:0;
+  padding:10px 16px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:700;
+}
+button:hover, .btn:hover, a button:hover{filter:brightness(.95)}
+
+.delete-btn{background:#a81a2a;color:var(--accent)}
+
+/* Forms */
+input, select, textarea{
+  background:#121212;
+  border:1px solid #222;
+  padding:10px;
+  border-radius:8px;
+  color:var(--accent);
+}
+input:focus, select:focus, textarea:focus{outline:2px solid rgba(255,215,0,0.08)}
+
+/* Tables */
+table{width:100%;border-collapse:collapse}
+th,td{padding:12px;border-bottom:1px solid #151515}
+th{background:#0b0b0b;color:var(--accent);position:sticky;top:0}
+
+/* Utility */
+.footer{background:transparent;color:#bdb76b;padding:12px;text-align:center}
+.logo-link{display:inline-flex;align-items:center;gap:8px}
+
+/* Small screens */
+@media (max-width:700px){
+  .site-header{padding:12px}
+  .site-header .logo{width:48px;height:48px}
+  main, .card{padding:14px}
+}
