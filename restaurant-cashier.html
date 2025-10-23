@@ -62,6 +62,8 @@
         </table>
       </div>
 
+  <div id="statusBar" style="margin-top:10px;min-height:22px"></div>
+
       <!-- Action bar inside the card -->
       <div id="cashierActions" class="cashier-actions">
         <button id="doneBtn" type="button">Checkout</button>
@@ -106,7 +108,50 @@
       }catch(e){ console.warn('Firebase dynamic import failed', e); return null }
     }
 
-    async function sendWebhook(url, content){ try{ await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content})}) }catch(e){console.error('webhook',e)} }
+    async function sendWebhook(url, content){
+      const statusEl = document.getElementById('statusBar');
+      statusEl.textContent = 'Sending webhooks...';
+      try{
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ content })
+        });
+
+        // If the response is opaque due to CORS it may still succeed but we can't inspect it.
+        if(res.type === 'opaque'){
+          statusEl.textContent = 'Webhook sent (opaque response)';
+          console.debug('opaque response from webhook');
+          return true;
+        }
+
+        const txt = await res.text().catch(()=>null);
+        if(res.ok || res.status === 204){
+          statusEl.textContent = 'Webhook sent (' + (res.status||'ok') + ')';
+          console.debug('webhook response', res.status, txt);
+          return true;
+        }
+
+        // If we reach here it's a non-OK HTTP status. Show details to help debug CORS/permission issues.
+        statusEl.textContent = `Webhook failed: ${res.status} ${res.statusText}`;
+        console.warn('webhook failed', res.status, res.statusText, txt);
+
+        // try a no-cors fallback (may not allow content-type and may be blocked by the browser)
+        try{
+          await fetch(url, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ content }) });
+          statusEl.textContent = 'Webhook attempted (no-cors fallback)';
+          return true;
+        }catch(fbErr){
+          console.warn('no-cors fallback failed', fbErr);
+        }
+
+        return false;
+      }catch(e){
+        console.error('webhook error', e);
+        statusEl.textContent = 'Webhook error: ' + (e && e.message ? e.message : String(e));
+        return false;
+      }
+    }
 
     document.getElementById('doneBtn').addEventListener('click', async ()=>{
       const inputs = Array.from(document.querySelectorAll('.qty'));
@@ -129,12 +174,13 @@
         }
       }
 
-      if(low.length) await sendWebhook(lowWebhook, `:warning: Low inventory: ${low.map(i=>i.id+"("+i.stock+")").join(', ')}`);
+  if(low.length) await sendWebhook(lowWebhook, `:warning: Low inventory: ${low.map(i=>i.id+"("+i.stock+")").join(', ')}`);
 
       if(receipt.length){
         const menuLookup = id => { const el = document.querySelector(`.qty[data-id="${id}"]`); if(!el) return id; const tr = el.closest('tr'); return tr ? tr.querySelector('td').textContent.trim() : id };
         const txt = `Receipt - ${new Date().toLocaleString()}\n` + receipt.map(r=>`${menuLookup(r.id)} x${r.qty} - $${(r.price*r.qty).toFixed(2)}`).join('\n') + `\nTotal: $${total.toFixed(2)}`;
-        await sendWebhook(receiptWebhook, txt);
+        const ok = await sendWebhook(receiptWebhook, txt);
+        if(!ok) console.warn('Receipt webhook may not have been delivered (check console)');
       }
     });
 
