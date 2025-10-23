@@ -144,3 +144,17 @@ main form button[type="submit"], form#bookingForm button[type="submit"]{
 
 /* Make additional notes smaller by default area but keep spacing */
 textarea{min-height:90px}
+
+/* Cashier specific tweaks: black rows with white text, visible number inputs and buttons inside cards */
+.card table, .card thead, .card tbody, .card tr, .card th, .card td{background:transparent;color:#fff}
+.card td, .card th{border-bottom:1px solid rgba(255,255,255,0.06);padding:10px}
+.card th{color:#fff}
+
+.card input[type="number"]{background:#fff;color:#000;border-radius:6px;padding:6px 8px;border:1px solid #ccc;width:80px}
+.card input[type="number"]:focus{outline:none;box-shadow:0 0 0 3px rgba(255,215,0,0.12)}
+
+.card button{background:#000;color:#fff;border:1px solid rgba(255,255,255,0.06);padding:10px 14px;border-radius:6px}
+.card button:hover{filter:brightness(1.05)}
+
+/* Ensure done/clear buttons inside the cashier are visible and separated */
+#doneBtn, #clearBtn{display:inline-block;margin-right:12px}
