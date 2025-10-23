@@ -11,149 +11,134 @@
     <a class="logo-link" href="index.html"><img class="logo" src="logo.png" alt="logo"></a>
     <h1>Restaurant Cashier</h1>
     <nav class="site-nav"><a href="#">Staff</a></nav>
+  </header>
 
-      <p id="total" style="margin-top:12px;font-weight:700"></p>
+  <main>
+    <div class="card" id="cashierCard">
+      <h2>Cashier terminal</h2>
+      <p class="muted">Select items and enter quantities. Click <strong>Checkout</strong> to finalize and update inventory.</p>
+
+      <div id="menuContainer" style="overflow:auto;max-height:620px">
+        <table id="menuTable" aria-label="Menu items">
+          <thead>
+            <tr><th style="width:60%">Item</th><th style="width:20%">Price</th><th style="width:20%">Qty</th></tr>
+          </thead>
+          <tbody>
+            <tr><td style="color:#fff">Fried Bacon</td><td style="color:#fff">$42</td><td><input class="qty" data-id="fried_bacon" data-price="42" type="number" min="0" value="0" aria-label="Fried Bacon quantity"></td></tr>
+            <tr><td style="color:#fff">Mac N' Cheese</td><td style="color:#fff">$22</td><td><input class="qty" data-id="mac_cheese" data-price="22" type="number" min="0" value="0" aria-label="Mac N' Cheese quantity"></td></tr>
+            <tr><td style="color:#fff">French Toast</td><td style="color:#fff">$27</td><td><input class="qty" data-id="french_toast" data-price="27" type="number" min="0" value="0" aria-label="French Toast quantity"></td></tr>
+            <tr><td style="color:#fff">Pancakes</td><td style="color:#fff">$35</td><td><input class="qty" data-id="pancakes" data-price="35" type="number" min="0" value="0" aria-label="Pancakes quantity"></td></tr>
+            <tr><td style="color:#fff">Fried Egg</td><td style="color:#fff">$9</td><td><input class="qty" data-id="fried_egg" data-price="9" type="number" min="0" value="0" aria-label="Fried Egg quantity"></td></tr>
+            <tr><td style="color:#fff">Scrambled Eggs</td><td style="color:#fff">$33</td><td><input class="qty" data-id="scrambled_eggs" data-price="33" type="number" min="0" value="0" aria-label="Scrambled Eggs quantity"></td></tr>
+            <tr><td style="color:#fff">Hot Cocoa</td><td style="color:#fff">$29</td><td><input class="qty" data-id="hot_cocoa" data-price="29" type="number" min="0" value="0" aria-label="Hot Cocoa quantity"></td></tr>
+            <tr><td style="color:#fff">Mashed Potatoes</td><td style="color:#fff">$47</td><td><input class="qty" data-id="mashed_potatoes" data-price="47" type="number" min="0" value="0" aria-label="Mashed Potatoes quantity"></td></tr>
+            <tr><td style="color:#fff">Grilled Cheese</td><td style="color:#fff">$57</td><td><input class="qty" data-id="grilled_cheese" data-price="57" type="number" min="0" value="0" aria-label="Grilled Cheese quantity"></td></tr>
+            <tr><td style="color:#fff">Latke</td><td style="color:#fff">$76</td><td><input class="qty" data-id="latke" data-price="76" type="number" min="0" value="0" aria-label="Latke quantity"></td></tr>
+            <tr><td style="color:#fff">Tamales</td><td style="color:#fff">$46</td><td><input class="qty" data-id="tamales" data-price="46" type="number" min="0" value="0" aria-label="Tamales quantity"></td></tr>
+            <tr><td style="color:#fff">Eggnog</td><td style="color:#fff">$22</td><td><input class="qty" data-id="eggnog" data-price="22" type="number" min="0" value="0" aria-label="Eggnog quantity"></td></tr>
+            <tr><td style="color:#fff">Gravy</td><td style="color:#fff">$49</td><td><input class="qty" data-id="gravy" data-price="49" type="number" min="0" value="0" aria-label="Gravy quantity"></td></tr>
+            <tr><td style="color:#fff">Nachos</td><td style="color:#fff">$31</td><td><input class="qty" data-id="nachos" data-price="31" type="number" min="0" value="0" aria-label="Nachos quantity"></td></tr>
+            <tr><td style="color:#fff">Chocolate Chip Cookies</td><td style="color:#fff">$91</td><td><input class="qty" data-id="choc_chip_cookies" data-price="91" type="number" min="0" value="0" aria-label="Chocolate Chip Cookies quantity"></td></tr>
+            <tr><td style="color:#fff">Pumpkin Pie</td><td style="color:#fff">$94</td><td><input class="qty" data-id="pumpkin_pie" data-price="94" type="number" min="0" value="0" aria-label="Pumpkin Pie quantity"></td></tr>
+            <tr><td style="color:#fff">Christmas Cookie</td><td style="color:#fff">$82</td><td><input class="qty" data-id="christmas_cookie" data-price="82" type="number" min="0" value="0" aria-label="Christmas Cookie quantity"></td></tr>
+            <tr><td style="color:#fff">Chocolate Cake</td><td style="color:#fff">$74</td><td><input class="qty" data-id="chocolate_cake" data-price="74" type="number" min="0" value="0" aria-label="Chocolate Cake quantity"></td></tr>
+            <tr><td style="color:#fff">Lasagna</td><td style="color:#fff">$69</td><td><input class="qty" data-id="lasagna" data-price="69" type="number" min="0" value="0" aria-label="Lasagna quantity"></td></tr>
+            <tr><td style="color:#fff">Pizza</td><td style="color:#fff">$85</td><td><input class="qty" data-id="pizza" data-price="85" type="number" min="0" value="0" aria-label="Pizza quantity"></td></tr>
+            <tr><td style="color:#fff">Stuffing</td><td style="color:#fff">$44</td><td><input class="qty" data-id="stuffing" data-price="44" type="number" min="0" value="0" aria-label="Stuffing quantity"></td></tr>
+            <tr><td style="color:#fff">Baked Potatoes</td><td style="color:#fff">$64</td><td><input class="qty" data-id="baked_potatoes" data-price="64" type="number" min="0" value="0" aria-label="Baked Potatoes quantity"></td></tr>
+            <tr><td style="color:#fff">Apple Pie</td><td style="color:#fff">$77</td><td><input class="qty" data-id="apple_pie" data-price="77" type="number" min="0" value="0" aria-label="Apple Pie quantity"></td></tr>
+            <tr><td style="color:#fff">Gingerbread Cookie</td><td style="color:#fff">$73</td><td><input class="qty" data-id="gingerbread_cookie" data-price="73" type="number" min="0" value="0" aria-label="Gingerbread Cookie quantity"></td></tr>
+            <tr><td style="color:#fff">Pecan Pie</td><td style="color:#fff">$95</td><td><input class="qty" data-id="pecan_pie" data-price="95" type="number" min="0" value="0" aria-label="Pecan Pie quantity"></td></tr>
+            <tr><td style="color:#fff">Cooked Turkey</td><td style="color:#fff">$85</td><td><input class="qty" data-id="cooked_turkey" data-price="85" type="number" min="0" value="0" aria-label="Cooked Turkey quantity"></td></tr>
+            <tr><td style="color:#fff">Dinner Rolls</td><td style="color:#fff">$39</td><td><input class="qty" data-id="dinner_rolls" data-price="39" type="number" min="0" value="0" aria-label="Dinner Rolls quantity"></td></tr>
+            <tr><td style="color:#fff">Candied Yams</td><td style="color:#fff">$70</td><td><input class="qty" data-id="candied_yams" data-price="70" type="number" min="0" value="0" aria-label="Candied Yams quantity"></td></tr>
+            <tr><td style="color:#fff">Hamburger</td><td style="color:#fff">$61</td><td><input class="qty" data-id="hamburger" data-price="61" type="number" min="0" value="0" aria-label="Hamburger quantity"></td></tr>
+            <tr><td style="color:#fff">Kebabs</td><td style="color:#fff">$74</td><td><input class="qty" data-id="kebabs" data-price="74" type="number" min="0" value="0" aria-label="Kebabs quantity"></td></tr>
+            <tr><td style="color:#fff">Grilled Steak</td><td style="color:#fff">$56</td><td><input class="qty" data-id="grilled_steak" data-price="56" type="number" min="0" value="0" aria-label="Grilled Steak quantity"></td></tr>
+            <tr><td style="color:#fff">Grilled Chicken</td><td style="color:#fff">$44</td><td><input class="qty" data-id="grilled_chicken" data-price="44" type="number" min="0" value="0" aria-label="Grilled Chicken quantity"></td></tr>
+            <tr><td style="color:#fff">Sushi</td><td style="color:#fff">$35</td><td><input class="qty" data-id="sushi" data-price="35" type="number" min="0" value="0" aria-label="Sushi quantity"></td></tr>
+            <tr><td style="color:#fff">S'More</td><td style="color:#fff">$48</td><td><input class="qty" data-id="smore" data-price="48" type="number" min="0" value="0" aria-label="S'More quantity"></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Action bar inside the card -->
+      <div id="cashierActions" class="cashier-actions">
+        <button id="doneBtn" type="button">Checkout</button>
+        <button id="clearBtn" type="button">Clear</button>
+        <div style="flex:1"></div>
+        <div id="total" style="font-weight:800;color:#fff;align-self:center"></div>
+      </div>
     </div>
-
   </main>
 
   <script type="module">
-    // require staff login
-    if(!localStorage.getItem('loggedInUser')){
-      window.location.href = 'admin.html';
-    }
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import {
-      getFirestore, doc, getDoc, setDoc, updateDoc
-    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+    // simple guard
+    if(!localStorage.getItem('loggedInUser')){ window.location.href = 'admin.html'; }
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAK-baJsRLyBp8EFmtWFqOmjTxjALTRl6Q",
-      authDomain: "hunter-s-2e810.firebaseapp.com",
-      projectId: "hunter-s-2e810",
-      storageBucket: "hunter-s-2e810.appspot.com",
-      messagingSenderId: "897135124770",
-      appId: "1:897135124770:web:7018fb47a4ec4d7c52857b"
-    };
+    // Webhooks
+    const lowWebhook = 'https://discord.com/api/webhooks/1138767072194073658/0CqFOr9mKqg5Gq3W3mqt3u4N3m3bqfG9k3h0Zb1xYjK2pQx8G5Y7h2xLw9aR5tU1v';
+    const receiptWebhook = 'https://discord.com/api/webhooks/1138767072194073658/0CqFOr9mKqg5Gq3W3mqt3u4N3m3bqfG9k3h0Zb1xYjK2pQx8G5Y7h2xLw9aR5tU1v';
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-  const webhook = 'https://discord.com/api/webhooks/1397502789977899101/idvgRaQHG2zBPBL8tkodvsulbbryZ5susSj355kRyv9AuPcKj8-tCtr947DF6MqfW4yz';
-  // receipt webhook (send order receipts here)
-  const receiptWebhook = 'https://discord.com/api/webhooks/1138767072194073658/0CqFOr9mKqg5Gq3W3mqt3u4N3m3bqfG9k3h0Zb1xYjK2pQx8G5Y7h2xLw9aR5tU1v';
-
-    // Menu items derived from provided attachment (price = sell price)
-    const menu = [
-      {id:'fried_bacon', name:'Fried Bacon', price:42},
-      {id:'mac_cheese', name:"Mac N' Cheese", price:22},
-      {id:'french_toast', name:'French Toast', price:27},
-      {id:'pancakes', name:'Pancakes', price:35},
-      {id:'fried_egg', name:'Fried Egg', price:9},
-      {id:'scrambled_eggs', name:'Scrambled Eggs', price:33},
-      {id:'hot_cocoa', name:'Hot Cocoa', price:29},
-      {id:'mashed_potatoes', name:'Mashed Potatoes', price:47},
-      {id:'grilled_cheese', name:'Grilled Cheese', price:57},
-      {id:'latke', name:'Latke', price:76},
-      {id:'tamales', name:'Tamales', price:46},
-      {id:'eggnog', name:'Eggnog', price:22},
-      {id:'gravy', name:'Gravy', price:49},
-      {id:'nachos', name:'Nachos', price:31},
-      {id:'choc_chip_cookies', name:'Chocolate Chip Cookies', price:91},
-      {id:'pumpkin_pie', name:'Pumpkin Pie', price:94},
-      {id:'christmas_cookie', name:'Christmas Cookie', price:82},
-      {id:'chocolate_cake', name:'Chocolate Cake', price:74},
-      {id:'lasagna', name:'Lasagna', price:69},
-      {id:'pizza', name:'Pizza', price:85},
-      {id:'stuffing', name:'Stuffing', price:44},
-      {id:'baked_potatoes', name:'Baked Potatoes', price:64},
-      {id:'apple_pie', name:'Apple Pie', price:77},
-      {id:'gingerbread_cookie', name:'Gingerbread Cookie', price:73},
-      {id:'pecan_pie', name:'Pecan Pie', price:95},
-      {id:'cooked_turkey', name:'Cooked Turkey', price:85},
-      {id:'dinner_rolls', name:'Dinner Rolls', price:39},
-      {id:'candied_yams', name:'Candied Yams', price:70},
-      {id:'hamburger', name:'Hamburger', price:61},
-      {id:'kebabs', name:'Kebabs', price:74},
-      {id:'grilled_steak', name:'Grilled Steak', price:56},
-      {id:'grilled_chicken', name:'Grilled Chicken', price:44},
-      {id:'sushi', name:'Sushi', price:35},
-      {id:'smore', name:"S'More", price:48}
-    ];
-
-    // render menu
-    const menuDiv = document.getElementById('menu');
-    const table = document.createElement('table');
-    table.style.width='100%';
-    table.innerHTML = '<thead><tr><th>Item</th><th>Price</th><th>Qty</th></tr></thead>';
-    const tbody = document.createElement('tbody');
-    menu.forEach(item=>{
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${item.name}</td><td>$${item.price}</td><td><input data-id="${item.id}" data-price="${item.price}" type="number" min="0" value="0" style="width:80px"></td>`;
-      tbody.appendChild(tr);
-    });
-    table.appendChild(tbody);
-    // clear existing menu div content and append
-    menuDiv.innerHTML='';
-    menuDiv.appendChild(table);
-    const totalP = document.getElementById('total');
-
-    async function sendDiscordAlert(message){
-      try{ await fetch(webhook, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({content:message})}); }
-      catch(e){ console.error('discord failed', e); }
+    // dynamic firebase helper
+    let _firebaseApp = null;
+    let _db = null;
+    async function ensureDb(){
+      if(_db) return { db:_db, funcs: null };
+      try{
+        const modApp = await import('https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js');
+        const modFs = await import('https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js');
+        const { initializeApp } = modApp;
+        const { getFirestore, doc, getDoc, setDoc, updateDoc } = modFs;
+        if(!_firebaseApp){
+          const firebaseConfig = {
+            apiKey: "AIzaSyAK-baJsRLyBp8EFmtWFqOmjTxjALTRl6Q",
+            authDomain: "hunter-s-2e810.firebaseapp.com",
+            projectId: "hunter-s-2e810",
+            storageBucket: "hunter-s-2e810.appspot.com",
+            messagingSenderId: "897135124770",
+            appId: "1:897135124770:web:7018fb47a4ec4d7c52857b"
+          };
+          _firebaseApp = initializeApp(firebaseConfig);
+        }
+        _db = getFirestore(_firebaseApp);
+        return { db: _db, funcs: { doc, getDoc, setDoc, updateDoc } };
+      }catch(e){ console.warn('Firebase dynamic import failed', e); return null }
     }
 
-    async function getStock(itemId){
-      const dref = doc(db, 'inventory', itemId);
-      const snap = await getDoc(dref);
-      if(!snap.exists()) return null;
-      return snap.data().stock||0;
-    }
-
-    async function setStock(itemId, value){
-      const dref = doc(db, 'inventory', itemId);
-      try{ await updateDoc(dref, { stock: value }); }
-      catch(e){ await setDoc(dref, { stock: value }); }
-    }
+    async function sendWebhook(url, content){ try{ await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content})}) }catch(e){console.error('webhook',e)} }
 
     document.getElementById('doneBtn').addEventListener('click', async ()=>{
-      const inputs = Array.from(menuDiv.querySelectorAll('input'));
-      let total = 0;
-      const lowItems = [];
-      const receiptItems = [];
+      const inputs = Array.from(document.querySelectorAll('.qty'));
+      let total = 0; const receipt = []; const low = [];
+      for(const inp of inputs){ const q = Number(inp.value||0); if(!q) continue; const id = inp.dataset.id; const price = Number(inp.dataset.price)||0; total += price*q; receipt.push({id,qty:q,price}); }
+      document.getElementById('total').textContent = 'Total: $' + total.toFixed(2);
 
-      for(const inp of inputs){
-        const qty = Number(inp.value||0);
-        if(!qty) continue;
-        const price = Number(inp.getAttribute('data-price'))||0;
-        total += price * qty;
-        const id = inp.getAttribute('data-id');
-        receiptItems.push({ name: menu.find(m=>m.id===id)?.name || id, qty, price });
-        // read current stock
-        let current = await getStock(id);
-        if(current === null) current = 100; // default initial
-        const newStock = Math.max(0, current - qty);
-        await setStock(id, newStock);
-        if(newStock <= 20) lowItems.push({id, stock:newStock});
+      const fb = await ensureDb();
+      if(fb){
+        for(const r of receipt){
+          try{
+            const dref = fb.funcs.doc(fb.db, 'inventory', r.id);
+            const snap = await fb.funcs.getDoc(dref);
+            let cur = snap && snap.exists ? (snap.data().stock||0) : null;
+            if(cur === null) cur = 100;
+            const newVal = Math.max(0, cur - r.qty);
+            try{ await fb.funcs.updateDoc(dref, { stock: newVal }); }catch(e){ await fb.funcs.setDoc(dref, { stock: newVal }); }
+            if(newVal <= 20) low.push({id:r.id,stock:newVal});
+          }catch(e){ console.warn('inventory update failed', r.id, e); }
+        }
       }
 
-      if(lowItems.length){
-        await sendDiscordAlert(`:warning: Low inventory: ${lowItems.map(i=>i.id+"("+i.stock+")").join(', ')}`);
+      if(low.length) await sendWebhook(lowWebhook, `:warning: Low inventory: ${low.map(i=>i.id+"("+i.stock+")").join(', ')}`);
+
+      if(receipt.length){
+        const menuLookup = id => { const el = document.querySelector(`.qty[data-id="${id}"]`); if(!el) return id; const tr = el.closest('tr'); return tr ? tr.querySelector('td').textContent.trim() : id };
+        const txt = `Receipt - ${new Date().toLocaleString()}\n` + receipt.map(r=>`${menuLookup(r.id)} x${r.qty} - $${(r.price*r.qty).toFixed(2)}`).join('\n') + `\nTotal: $${total.toFixed(2)}`;
+        await sendWebhook(receiptWebhook, txt);
       }
-
-      totalP.textContent = 'Total: $' + total.toFixed(2);
-
-      // send receipt to receipt webhook
-      try{
-        const receiptText = `Receipt - ${new Date().toLocaleString()}\n` + receiptItems.map(it=>`${it.name} x${it.qty} - $${(it.price*it.qty).toFixed(2)}`).join('\n') + `\nTotal: $${total.toFixed(2)}`;
-        await fetch(receiptWebhook, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ content: receiptText }) });
-      }catch(e){ console.error('receipt webhook failed', e); }
     });
 
-    document.getElementById('clearBtn').addEventListener('click', ()=>{
-      menuDiv.querySelectorAll('input').forEach(i=>i.value=0);
-      totalP.textContent='';
-    });
+    document.getElementById('clearBtn').addEventListener('click', ()=>{ document.querySelectorAll('.qty').forEach(i=>i.value=0); document.getElementById('total').textContent = ''; });
   </script>
 </body>
 </html>
