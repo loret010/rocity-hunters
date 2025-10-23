@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Inventory - Hunter's</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="logo-link" href="index.html"><img class="logo" src="logo.png" alt="logo"></a>
+    <h1>Inventory</h1>
+    <nav class="site-nav"><a href="#">Staff</a></nav>
+  </header>
+
+  <main>
+    <h2>Current stock</h2>
+    <div id="list" class="card"></div>
+
+    <h3>Adjust stock</h3>
+    <div>
+      <select id="selectItem"></select>
+      <input type="number" id="adjustQty" value="0">
+      <button id="applyAdjust">Apply</button>
+    </div>
+  </main>
+
+  <script type="module">
+    // require staff login
+    if(!localStorage.getItem('loggedInUser')){
+      window.location.href = 'admin.html';
+    }
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc, collection, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAK-baJsRLyBp8EFmtWFqOmjTxjALTRl6Q",
+      authDomain: "hunter-s-2e810.firebaseapp.com",
+      projectId: "hunter-s-2e810",
+      storageBucket: "hunter-s-2e810.appspot.com",
+      messagingSenderId: "897135124770",
+      appId: "1:897135124770:web:7018fb47a4ec4d7c52857b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+  const webhook = 'https://discord.com/api/webhooks/1138767072194073658/0CqFOr9mKqg5Gq3W3mqt3u4N3m3bqfG9k3h0Zb1xYjK2pQx8G5Y7h2xLw9aR5tU1v';
+
+    async function fetchAll(){
+      const col = collection(db, 'inventory');
+      const snap = await getDocs(col);
+      const items = {};
+      snap.forEach(d=> items[d.id] = d.data().stock || 0);
+      return items;
+    }
+
+    async function render(){
+      const inv = await fetchAll();
+      const list = document.getElementById('list'); list.innerHTML='';
+      Object.keys(inv).forEach(k=>{
+        const row = document.createElement('div');
+        row.style.display='flex';row.style.justifyContent='space-between';row.style.padding='8px 4px';
+        row.innerHTML = `<div>${k.replace('_',' ')}</div><div>${inv[k]}</div>`;
+        list.appendChild(row);
+      });
+
+      const sel = document.getElementById('selectItem'); sel.innerHTML='';
+      Object.keys(inv).forEach(k=>{ const o=document.createElement('option'); o.value=k; o.textContent=k.replace('_',' '); sel.appendChild(o); });
+    }
+
+    async function sendAlert(msg){ try{ await fetch(webhook,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:msg})}); }catch(e){console.error(e)} }
+
+    document.getElementById('applyAdjust').addEventListener('click', async ()=>{
+      const key = document.getElementById('selectItem').value;
+      const qty = Number(document.getElementById('adjustQty').value||0);
+      const dref = doc(db, 'inventory', key);
+      const snap = await getDoc(dref);
+      let current = 0;
+      if(snap.exists()) current = snap.data().stock || 0;
+      const newVal = Math.max(0, current + qty);
+      try{ await updateDoc(dref, { stock: newVal }); }catch(e){ await setDoc(dref, { stock: newVal }); }
+      await render();
+      if(newVal <= 20) await sendAlert(`:warning: Inventory low ${key} (${newVal})`);
+    });
+
+    // initial render
+    render();
+  </script>
+</body>
+</html>

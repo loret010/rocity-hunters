@@ -18,6 +18,8 @@
 
   <div class="top-buttons" id="topButtons" style="display:none;">
     <button onclick="goHome()">🏠 Home</button>
+    <button onclick="openInventory()">📦 Inventory</button>
+    <button onclick="openCashier()">💳 Cashier</button>
     <button onclick="logout()">🚪 Logout</button>
   </div>
 
@@ -219,6 +221,8 @@
 
     window.logout = logout;
     window.goHome = goHome;
+    window.openInventory = function(){ window.location.href = 'inventory.html'; };
+    window.openCashier = function(){ window.location.href = 'restaurant-cashier.html'; };
   </script>
 </body>
 </html>
