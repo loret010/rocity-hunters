@@ -158,3 +158,19 @@ textarea{min-height:90px}
 
 /* Ensure done/clear buttons inside the cashier are visible and separated */
 #doneBtn, #clearBtn{display:inline-block;margin-right:12px}
+
+/* Cashier action bar: stick to bottom of the card and high-contrast buttons */
+.card{position:relative}
+.cashier-actions{
+  position:sticky;
+  bottom:12px;
+  display:flex;
+  gap:12px;
+  justify-content:flex-start;
+  margin-top:18px;
+  background:transparent;
+  padding:8px 0;
+}
+.cashier-actions #doneBtn{background:var(--primary);color:#fff;border:0;padding:10px 18px;border-radius:8px;font-weight:800}
+.cashier-actions #clearBtn{background:#333;color:#fff;border:0;padding:10px 12px;border-radius:8px}
+.cashier-actions button{box-shadow:0 6px 18px rgba(0,0,0,0.18)}

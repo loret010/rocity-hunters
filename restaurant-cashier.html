@@ -37,7 +37,7 @@
         <label>Beer ($4) <input data-type="drink" data-id="beer" data-price="4" type="number" min="0" value="0"></label>
       </div>
 
-      <div style="margin-top:18px">
+      <div class="cashier-actions">
         <button id="doneBtn">Done</button>
         <button id="clearBtn">Clear</button>
       </div>
@@ -157,8 +157,8 @@
         if(!qty) continue;
         const price = Number(inp.getAttribute('data-price'))||0;
         total += price * qty;
-  receiptItems.push({ name: menu.find(m=>m.id===id)?.name || id, qty, price });
         const id = inp.getAttribute('data-id');
+        receiptItems.push({ name: menu.find(m=>m.id===id)?.name || id, qty, price });
         // read current stock
         let current = await getStock(id);
         if(current === null) current = 100; // default initial
