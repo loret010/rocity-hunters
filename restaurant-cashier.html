@@ -126,8 +126,10 @@
     // dynamic firebase helper
     let _firebaseApp = null;
     let _db = null;
+    // cache firestore helper functions so repeated calls return the same shape
+    let _fsFuncs = null;
     async function ensureDb(){
-      if(_db) return { db:_db, funcs: null };
+      if(_db && _fsFuncs) return { db: _db, funcs: _fsFuncs };
       try{
         const modApp = await import('https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js');
         const modFs = await import('https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js');
@@ -145,7 +147,8 @@
           _firebaseApp = initializeApp(firebaseConfig);
         }
         _db = getFirestore(_firebaseApp);
-        return { db: _db, funcs: { doc, getDoc, setDoc, updateDoc } };
+        _fsFuncs = { doc, getDoc, setDoc, updateDoc };
+        return { db: _db, funcs: _fsFuncs };
       }catch(e){ console.warn('Firebase dynamic import failed', e); return null }
     }
 
