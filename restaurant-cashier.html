@@ -200,9 +200,14 @@
       for(const inp of inputs){ const q = Number(inp.value||0); if(!q) continue; const id = inp.dataset.id; const price = Number(inp.dataset.price)||0; total += price*q; receipt.push({id,qty:q,price}); }
       document.getElementById('total').textContent = 'Total: $' + total.toFixed(2);
 
+      const statusEl = document.getElementById('statusBar');
       const fb = await ensureDb();
-      if(fb){
+      if(!fb){
+        statusEl.textContent = 'Firebase unavailable — inventory was not updated (check console).';
+        console.warn('ensureDb returned null; skipping inventory updates');
+      } else {
         // For each ordered recipe, decrement ingredient docs by qty * ingredient count
+        let updatedCount = 0;
         for(const r of receipt){
           const recipe = recipes[r.id];
           if(!recipe) continue;
@@ -218,11 +223,15 @@
               let cur = snap && snap.exists ? (snap.data().stock||0) : null;
               if(cur === null) cur = 100;
               const newVal = Math.max(0, cur - delta);
-              try{ await fb.funcs.updateDoc(dref, { stock: newVal }); }catch(e){ await fb.funcs.setDoc(dref, { stock: newVal }); }
+              try{ await fb.funcs.updateDoc(dref, { stock: newVal }); }
+              catch(e){ await fb.funcs.setDoc(dref, { stock: newVal }); }
+              updatedCount++;
+              console.log('inventory updated', k, 'prev:', cur, 'delta:', delta, 'new:', newVal);
               if(newVal <= 20) low.push({id:k,stock:newVal});
             }catch(e){ console.warn('ingredient update failed', k, e); }
           }
         }
+        statusEl.textContent = 'Inventory updated for ' + updatedCount + ' ingredient entries.';
       }
 
   if(low.length) await sendWebhook(lowWebhook, `:warning: Low inventory: ${low.map(i=>i.id+"("+i.stock+")").join(', ')}`);
